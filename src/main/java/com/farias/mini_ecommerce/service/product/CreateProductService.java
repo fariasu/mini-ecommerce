@@ -26,14 +26,10 @@ public class CreateProductService {
         logger.info("Starting to create product: {}", productRequest);
 
         Product product = productMapper.toProduct(productRequest);
-        logger.debug("Mapped ProductRequest to Product: {}", product);
 
         Product savedProduct = productRepository.save(product);
         logger.info("Product saved to database: {}", savedProduct);
 
-        ProductResponse response = productMapper.toProductResponse(savedProduct);
-        logger.debug("Mapped Product to ProductResponse: {}", response);
-
-        return response;
+        return productMapper.toProductResponse(savedProduct);
     }
 }

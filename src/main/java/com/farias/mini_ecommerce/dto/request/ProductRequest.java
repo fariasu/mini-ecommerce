@@ -7,11 +7,11 @@ import jakarta.validation.constraints.NotNull;
 
 @Schema(description = "Request DTO for the Product creation.")
 public record ProductRequest(
-        @NotNull
+        @NotNull(message = "The name must not be blank.")
         @Schema(description = "Name of the Product.", example = "IPhone 15")
         String name,
 
-        @NotNull
+        @NotNull(message = "The description must not be blank.")
         @Schema(description = "Description of the Product.", example = "Camera 10MP, 128GB")
         String description,
 

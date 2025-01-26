@@ -1,4 +1,4 @@
-package com.farias.mini_ecommerce.controller.product;
+package com.farias.mini_ecommerce.controller;
 
 import com.farias.mini_ecommerce.dto.request.ProductRequest;
 import com.farias.mini_ecommerce.dto.response.ProductResponse;
