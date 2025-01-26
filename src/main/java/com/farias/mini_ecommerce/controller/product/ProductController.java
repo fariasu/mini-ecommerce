@@ -5,6 +5,7 @@ import com.farias.mini_ecommerce.dto.response.ProductResponse;
 import com.farias.mini_ecommerce.service.product.CreateProductService;
 import com.farias.mini_ecommerce.service.product.GetAllProductsService;
 import com.farias.mini_ecommerce.service.product.GetProductByIdService;
+import com.farias.mini_ecommerce.service.product.UpdateProductService;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -17,16 +18,21 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/product")
+@RequestMapping("/v1/product")
 public class ProductController {
     private final CreateProductService createProductService;
     private final GetProductByIdService getProductByIdService;
     private final GetAllProductsService getAllProductsService;
+    private final UpdateProductService updateProductService;
 
-    public ProductController(CreateProductService createProductService, GetProductByIdService getProductByIdService, GetAllProductsService getAllProductsService) {
+    public ProductController(CreateProductService createProductService,
+                             GetProductByIdService getProductByIdService,
+                             GetAllProductsService getAllProductsService,
+                             UpdateProductService updateProductService) {
         this.createProductService = createProductService;
         this.getProductByIdService = getProductByIdService;
         this.getAllProductsService = getAllProductsService;
+        this.updateProductService = updateProductService;
     }
 
     @PostMapping("/create")
@@ -72,5 +78,21 @@ public class ProductController {
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    @PutMapping("/update/{id}")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Update specified product.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Product not found."),
+            @ApiResponse(responseCode = "400", description = "Invalid request."),
+    })
+    public ResponseEntity<Object> update(@Valid @RequestBody ProductRequest request, @PathVariable UUID id) {
+        try{
+            var result = updateProductService.execute(request, id);
+            return ResponseEntity.status(HttpStatus.OK).body(result);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 }
