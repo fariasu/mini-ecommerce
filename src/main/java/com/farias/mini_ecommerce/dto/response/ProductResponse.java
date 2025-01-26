@@ -2,6 +2,7 @@ package com.farias.mini_ecommerce.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @Schema(description = "Response DTO for created Product.")
@@ -20,5 +21,11 @@ public record ProductResponse(
         Double price,
 
         @Schema(description = "Stock of the Product.")
-        Integer stock
+        Integer stock,
+
+        @Schema(description = "Product creation date.")
+        Instant createdAt,
+
+        @Schema(description = "Product last update date.")
+        Instant updatedAt
 ) {}
