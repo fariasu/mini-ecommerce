@@ -2,10 +2,7 @@ package com.farias.mini_ecommerce.controller.product;
 
 import com.farias.mini_ecommerce.dto.request.ProductRequest;
 import com.farias.mini_ecommerce.dto.response.ProductResponse;
-import com.farias.mini_ecommerce.service.product.CreateProductService;
-import com.farias.mini_ecommerce.service.product.GetAllProductsService;
-import com.farias.mini_ecommerce.service.product.GetProductByIdService;
-import com.farias.mini_ecommerce.service.product.UpdateProductService;
+import com.farias.mini_ecommerce.service.product.*;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -24,15 +21,18 @@ public class ProductController {
     private final GetProductByIdService getProductByIdService;
     private final GetAllProductsService getAllProductsService;
     private final UpdateProductService updateProductService;
+    private final DeleteProductService deleteProductService;
 
     public ProductController(CreateProductService createProductService,
                              GetProductByIdService getProductByIdService,
                              GetAllProductsService getAllProductsService,
-                             UpdateProductService updateProductService) {
+                             UpdateProductService updateProductService,
+                             DeleteProductService deleteProductService) {
         this.createProductService = createProductService;
         this.getProductByIdService = getProductByIdService;
         this.getAllProductsService = getAllProductsService;
         this.updateProductService = updateProductService;
+        this.deleteProductService = deleteProductService;
     }
 
     @PostMapping("/create")
@@ -90,6 +90,22 @@ public class ProductController {
         try{
             var result = updateProductService.execute(request, id);
             return ResponseEntity.status(HttpStatus.OK).body(result);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    @DeleteMapping("/delete/{id}")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Delete specified product.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Product not found."),
+            @ApiResponse(responseCode = "400", description = "Invalid request."),
+    })
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+        try{
+            deleteProductService.execute(id);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

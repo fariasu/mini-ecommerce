@@ -21,12 +21,13 @@ public class GetAllProductsService {
     }
 
     public List<ProductResponse> execute() {
-        logger.info("Starting to get all Products");
+        logger.info("Fetching all products sorted by name in descending order.");
 
         var products = productRepository.findAllByOrderByNameDesc();
 
         if(products.isEmpty()) {
-            logger.info("No products found");
+            logger.warn("No products found.");
+            return List.of();
         }
 
         return productMapper.toProductResponseList(products);
