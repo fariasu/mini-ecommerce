@@ -19,7 +19,7 @@ public class UserController {
 
     private final CreateUserProductService createUserProductService;
 
-    public UserController(CreateUserProductService createUserProductService) {
+    public UserController(CreateUserProductService createUserProductService){
         this.createUserProductService = createUserProductService;
     }
 
