@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class CreateProductService {
-
     private static final Logger logger = LoggerFactory.getLogger(CreateProductService.class);
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
@@ -24,7 +23,6 @@ public class CreateProductService {
     }
 
     public ProductResponse execute(ProductRequest productRequest) {
-
         logger.info("Starting to create product: {}", productRequest);
 
         Product product = productMapper.toProduct(productRequest);
