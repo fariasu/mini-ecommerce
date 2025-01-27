@@ -3,7 +3,7 @@ package com.farias.mini_ecommerce.dto.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 
-public record UserRequest(
+public record UserRegisterRequest(
 
         @Size(max = 128)
         @NotBlank(message = "The name must not be blank.")

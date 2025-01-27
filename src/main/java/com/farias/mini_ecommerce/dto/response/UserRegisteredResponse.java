@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.Instant;
 import java.util.UUID;
 
-public record UserResponse(
+public record UserRegisteredResponse(
         @Schema(description = "ID of the User")
         UUID id,
         @Schema(description = "Name of the User")

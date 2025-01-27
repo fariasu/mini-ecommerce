@@ -1,8 +1,8 @@
 package com.farias.mini_ecommerce.mapper;
 
 import com.farias.mini_ecommerce.domain.User;
-import com.farias.mini_ecommerce.dto.request.UserRequest;
-import com.farias.mini_ecommerce.dto.response.UserResponse;
+import com.farias.mini_ecommerce.dto.request.UserRegisterRequest;
+import com.farias.mini_ecommerce.dto.response.UserRegisteredResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
@@ -15,7 +15,7 @@ public interface UserMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "userRole", ignore = true)
-    User toUser(UserRequest userRequest);
+    User toUser(UserRegisterRequest userRequest);
 
-    UserResponse toUserResponse(User user);
+    UserRegisteredResponse toUserResponse(User user);
 }

@@ -1,7 +1,7 @@
 package com.farias.mini_ecommerce.service.user;
 
-import com.farias.mini_ecommerce.dto.request.UserRequest;
-import com.farias.mini_ecommerce.dto.response.UserResponse;
+import com.farias.mini_ecommerce.dto.request.UserRegisterRequest;
+import com.farias.mini_ecommerce.dto.response.UserRegisteredResponse;
 import com.farias.mini_ecommerce.mapper.UserMapper;
 import com.farias.mini_ecommerce.repository.UserRepository;
 import com.farias.mini_ecommerce.service.product.GetAllProductsService;
@@ -11,7 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CreateUserProductService {
+public class RegisterUserService {
 
     private static final Logger logger = LoggerFactory.getLogger(GetAllProductsService.class);
 
@@ -19,15 +19,15 @@ public class CreateUserProductService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
-    public CreateUserProductService(UserRepository userRepository,
-                                    UserMapper userMapper,
-                                    PasswordEncoder passwordEncoder) {
+    public RegisterUserService(UserRepository userRepository,
+                               UserMapper userMapper,
+                               PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
     }
 
-    public UserResponse execute(UserRequest userRequest){
+    public UserRegisteredResponse execute(UserRegisterRequest userRequest){
         userRepository.findByEmail(userRequest.email())
                 .ifPresent(user -> {
                     logger.warn("User {} already exists", userRequest.email());
