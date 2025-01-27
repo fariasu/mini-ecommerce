@@ -31,12 +31,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (header != null && header.startsWith("Bearer ")) {
                 String token = header.substring(7);
 
-                String username = provider.validateToken(token);
+                String userId = provider.validateToken(token);
 
                 List<GrantedAuthority> authorities = provider.extractAuthorities(token);
 
                 UsernamePasswordAuthenticationToken auth =
-                        new UsernamePasswordAuthenticationToken(username, null, authorities);
+                        new UsernamePasswordAuthenticationToken(userId, null, authorities);
 
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }

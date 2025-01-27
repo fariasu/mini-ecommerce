@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -36,6 +37,7 @@ public class ProductController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Product created.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request.")
@@ -81,6 +83,7 @@ public class ProductController {
     }
 
     @PutMapping("/update/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Update specified product.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponse.class))),
             @ApiResponse(responseCode = "404", description = "Product not found."),
@@ -97,6 +100,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Delete specified product.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponse.class))),
             @ApiResponse(responseCode = "404", description = "Product not found."),
