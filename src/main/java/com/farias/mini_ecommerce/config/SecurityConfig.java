@@ -1,6 +1,6 @@
 package com.farias.mini_ecommerce.config;
 
-import com.farias.mini_ecommerce.security.JwtAuthenticationFilter;
+import com.farias.mini_ecommerce.security.jwt.filter.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
