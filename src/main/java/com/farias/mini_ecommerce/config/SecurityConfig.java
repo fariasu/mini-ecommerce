@@ -40,8 +40,8 @@ public class SecurityConfig {
                         .csrf(AbstractHttpConfigurer::disable)
                         .authorizeHttpRequests((requests) -> requests
                         .requestMatchers(AUTH_WHITELIST).permitAll()
-                        .requestMatchers("/v1/user/login").permitAll()
-                        .requestMatchers("/v1/user/register").permitAll()
+                        .requestMatchers("/v1/user/**").permitAll()
+                        .requestMatchers("/v1/product/**").permitAll()
                         .anyRequest().authenticated())
                         .sessionManagement(session ->
                                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
