@@ -1,11 +1,13 @@
 package com.farias.mini_ecommerce.modules.user.service;
 
+import com.farias.mini_ecommerce.exception.exceptions.BusinessException;
 import com.farias.mini_ecommerce.security.jwt.service.JwtTokenProvider;
-import com.farias.mini_ecommerce.modules.user.dto.UserLoginRequest;
-import com.farias.mini_ecommerce.modules.user.dto.UserLoggedResponse;
+import com.farias.mini_ecommerce.modules.user.dto.request.UserLoginRequest;
+import com.farias.mini_ecommerce.modules.user.dto.response.UserLoggedResponse;
 import com.farias.mini_ecommerce.modules.user.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -33,13 +35,13 @@ public class LoginUserService {
         var user = userRepository.findByEmail(userLoginRequest.email())
                 .orElseThrow(() -> {
                     logger.warn("User not found {}", userLoginRequest.email());
-                    return new SecurityException("User not found");
+                    return new BusinessException("Invalid username or password.", HttpStatus.BAD_REQUEST);
                 });
 
         var passwordMatches = passwordEncoder.matches(userLoginRequest.password(), user.getPassword());
         if(!passwordMatches) {
             logger.warn("Password does not match {}", userLoginRequest.email());
-            throw new SecurityException("Wrong email or Password.");
+            throw new BusinessException("Invalid username or password.", HttpStatus.BAD_REQUEST);
         }
 
         logger.info("Attempting to create token {}", user.getId());

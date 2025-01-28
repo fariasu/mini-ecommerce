@@ -1,4 +1,4 @@
-package com.farias.mini_ecommerce.modules.user.dto;
+package com.farias.mini_ecommerce.modules.user.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
@@ -17,7 +17,7 @@ public record UserRegisterRequest(
         String email,
 
         @Size(max = 256)
-        @NotNull(message = "The password must not be blank.")
+        @NotBlank(message = "The password must not be blank.")
         @Schema(description = "Name of the Product.", example = "Strong@Password123")
         @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]+$",
                 message = "The password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.")

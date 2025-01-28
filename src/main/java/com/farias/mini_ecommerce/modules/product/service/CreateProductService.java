@@ -1,8 +1,8 @@
 package com.farias.mini_ecommerce.modules.product.service;
 
 import com.farias.mini_ecommerce.modules.product.entity.Product;
-import com.farias.mini_ecommerce.modules.product.dto.ProductRequest;
-import com.farias.mini_ecommerce.modules.product.dto.ProductResponse;
+import com.farias.mini_ecommerce.modules.product.dto.request.ProductRequest;
+import com.farias.mini_ecommerce.modules.product.dto.response.ProductResponse;
 import com.farias.mini_ecommerce.modules.product.mapper.ProductMapper;
 import com.farias.mini_ecommerce.modules.product.repository.ProductRepository;
 import lombok.extern.slf4j.Slf4j;

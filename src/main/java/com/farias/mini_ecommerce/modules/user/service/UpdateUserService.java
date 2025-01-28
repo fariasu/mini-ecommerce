@@ -1,11 +1,13 @@
 package com.farias.mini_ecommerce.modules.user.service;
 
-import com.farias.mini_ecommerce.modules.user.dto.UserRegisterRequest;
-import com.farias.mini_ecommerce.modules.user.dto.UserRegisteredResponse;
+import com.farias.mini_ecommerce.exception.exceptions.BusinessException;
+import com.farias.mini_ecommerce.modules.user.dto.request.UserRegisterRequest;
+import com.farias.mini_ecommerce.modules.user.dto.response.UserRegisteredResponse;
 import com.farias.mini_ecommerce.modules.user.mapper.UserMapper;
 import com.farias.mini_ecommerce.modules.user.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +36,7 @@ public class UpdateUserService {
         var user = userRepository.findById(id)
                 .orElseThrow(() -> {
                     logger.warn("User with id {} not found", id);
-                    return new RuntimeException("User not found");
+                    return new BusinessException("User ID not found.", HttpStatus.BAD_REQUEST);
                 });
 
         userMapper.updateUser(userRegisterRequest, user);

@@ -1,4 +1,4 @@
-package com.farias.mini_ecommerce.modules.user.dto;
+package com.farias.mini_ecommerce.modules.user.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

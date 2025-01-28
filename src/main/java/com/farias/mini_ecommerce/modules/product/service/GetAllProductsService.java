@@ -1,6 +1,6 @@
 package com.farias.mini_ecommerce.modules.product.service;
 
-import com.farias.mini_ecommerce.modules.product.dto.ProductResponse;
+import com.farias.mini_ecommerce.modules.product.dto.response.ProductResponse;
 import com.farias.mini_ecommerce.modules.product.mapper.ProductMapper;
 import com.farias.mini_ecommerce.modules.product.repository.ProductRepository;
 import org.slf4j.Logger;

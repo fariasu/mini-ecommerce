@@ -39,6 +39,7 @@ dependencies {
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
 	implementation "org.springframework.boot:spring-boot-starter-security"
 	implementation group: 'com.auth0', name: 'java-jwt', version: '4.4.0'
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '3.4.2'
 }
 
 bootJar {

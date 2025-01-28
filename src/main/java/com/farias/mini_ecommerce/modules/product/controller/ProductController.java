@@ -1,7 +1,7 @@
 package com.farias.mini_ecommerce.modules.product.controller;
 
-import com.farias.mini_ecommerce.modules.product.dto.ProductRequest;
-import com.farias.mini_ecommerce.modules.product.dto.ProductResponse;
+import com.farias.mini_ecommerce.modules.product.dto.request.ProductRequest;
+import com.farias.mini_ecommerce.modules.product.dto.response.ProductResponse;
 import com.farias.mini_ecommerce.modules.product.service.*;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -37,18 +36,13 @@ public class ProductController {
     }
 
     @PostMapping("/create")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Product created.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request.")
     })
     public ResponseEntity<Object> create(@Valid @RequestBody ProductRequest request) {
-        try {
-            var result = createProductService.execute(request);
-            return ResponseEntity.status(HttpStatus.CREATED).body(result);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+        var result = createProductService.execute(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
     @GetMapping("/get/{id}")
@@ -58,13 +52,8 @@ public class ProductController {
             @ApiResponse(responseCode = "400", description = "Invalid request.")
     })
     public ResponseEntity<Object> getById(@PathVariable UUID id) {
-        try{
-            var result = getProductByIdService.execute(id);
-            return ResponseEntity.status(HttpStatus.OK).body(result);
-
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        var result = getProductByIdService.execute(id);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     @GetMapping("/get")
@@ -83,36 +72,24 @@ public class ProductController {
     }
 
     @PutMapping("/update/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Update specified product.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponse.class))),
             @ApiResponse(responseCode = "404", description = "Product not found."),
             @ApiResponse(responseCode = "400", description = "Invalid request."),
     })
     public ResponseEntity<Object> update(@Valid @RequestBody ProductRequest request, @PathVariable UUID id) {
-        try{
-            var result = updateProductService.execute(request, id);
-            return ResponseEntity.status(HttpStatus.OK).body(result);
-
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        var result = updateProductService.execute(request, id);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     @DeleteMapping("/delete/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Delete specified product.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponse.class))),
             @ApiResponse(responseCode = "404", description = "Product not found."),
             @ApiResponse(responseCode = "400", description = "Invalid request."),
     })
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
-        try{
-            deleteProductService.execute(id);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        deleteProductService.execute(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

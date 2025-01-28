@@ -1,9 +1,9 @@
 package com.farias.mini_ecommerce.modules.user.controller;
 
-import com.farias.mini_ecommerce.modules.user.dto.UserLoginRequest;
-import com.farias.mini_ecommerce.modules.user.dto.UserProfileResponse;
-import com.farias.mini_ecommerce.modules.user.dto.UserRegisterRequest;
-import com.farias.mini_ecommerce.modules.user.dto.UserRegisteredResponse;
+import com.farias.mini_ecommerce.modules.user.dto.request.UserLoginRequest;
+import com.farias.mini_ecommerce.modules.user.dto.response.UserProfileResponse;
+import com.farias.mini_ecommerce.modules.user.dto.request.UserRegisterRequest;
+import com.farias.mini_ecommerce.modules.user.dto.response.UserRegisteredResponse;
 import com.farias.mini_ecommerce.modules.user.service.LoginUserService;
 import com.farias.mini_ecommerce.modules.user.service.ProfileUserService;
 import com.farias.mini_ecommerce.modules.user.service.RegisterUserService;
@@ -44,14 +44,8 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "Invalid request.")
     })
     public ResponseEntity<Object> register(@Valid @RequestBody UserRegisterRequest userRequest) {
-        try{
-            var response = registerUserService.execute(userRequest);
-            return ResponseEntity.ok().body(response);
-
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
-
+        var response = registerUserService.execute(userRequest);
+        return ResponseEntity.ok().body(response);
     }
     @PostMapping("/login")
     @ApiResponses(value = {
@@ -59,12 +53,8 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "Invalid request.")
     })
     public ResponseEntity<Object> login(@Valid @RequestBody UserLoginRequest userRequest) {
-        try {
-            var response = loginUserService.execute(userRequest);
-            return ResponseEntity.ok().body(response);
-        }catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+        var response = loginUserService.execute(userRequest);
+        return ResponseEntity.ok().body(response);
     }
 
     @GetMapping("/profile/{id}")
@@ -73,13 +63,8 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "Invalid request.")
     })
     public ResponseEntity<Object> getProfile(@PathVariable UUID id) {
-        try{
-            var response = profileUserService.execute(id);
-            return ResponseEntity.ok().body(response);
-
-        }catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+        var response = profileUserService.execute(id);
+        return ResponseEntity.ok().body(response);
     }
 
     @PutMapping("/profile/update/{id}")
@@ -88,12 +73,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "Invalid request.")
     })
     public ResponseEntity<Object> update(@PathVariable UUID id, @Valid @RequestBody UserRegisterRequest userRequest) {
-        try{
-            var response = updateUserService.execute(id, userRequest);
-            return ResponseEntity.ok().body(response);
-
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+        var response = updateUserService.execute(id, userRequest);
+        return ResponseEntity.ok().body(response);
     }
 }
