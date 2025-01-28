@@ -1,6 +1,8 @@
 package com.farias.mini_ecommerce.config;
 
 import com.farias.mini_ecommerce.security.jwt.filter.JwtAuthenticationFilter;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +20,12 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@SecurityScheme(
+        name = "bearerAuth",
+        type = SecuritySchemeType.HTTP,
+        bearerFormat = "JWT",
+        scheme = "bearer"
+)
 public class SecurityConfig {
 
     @Autowired
