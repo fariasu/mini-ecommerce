@@ -39,9 +39,17 @@ public class UpdateUserService {
                     return new BusinessException("User ID not found.", HttpStatus.BAD_REQUEST);
                 });
 
-        userMapper.updateUser(userRegisterRequest, user);
+        if(!userRegisterRequest.email().equals(user.getEmail())) {
+            var emailExists = userRepository.existsByEmail(userRegisterRequest.email());
+
+            if(emailExists)
+                throw new BusinessException("Email already exists.", HttpStatus.CONFLICT);
+        }
+
         user.setUpdatedAt(Instant.now());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        userMapper.updateUser(userRegisterRequest, user);
         userRepository.save(user);
 
         logger.info("Updated user with id {}", id);
