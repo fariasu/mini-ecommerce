@@ -3,7 +3,6 @@ package com.farias.mini_ecommerce.config;
 import com.farias.mini_ecommerce.security.jwt.filter.JwtAuthenticationFilter;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,14 +27,17 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 )
 public class SecurityConfig {
 
-    @Autowired
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
-
     private static final String[] AUTH_WHITELIST = {
             // -- Swagger UI v3 (OpenAPI)
             "/v3/api-docs/**",
             "/swagger-ui/**"
     };
+
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    }
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -46,7 +48,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
                 http
                         .csrf(AbstractHttpConfigurer::disable)
-                        .authorizeHttpRequests((requests) -> requests
+                        .authorizeHttpRequests(requests -> requests
                         .requestMatchers(AUTH_WHITELIST).permitAll()
                         .requestMatchers("/v1/user/**").permitAll()
                         .requestMatchers("/v1/product/**").permitAll()
