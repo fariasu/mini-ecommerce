@@ -1,5 +1,6 @@
 package com.farias.mini_ecommerce.modules.product.controller;
 
+import com.farias.mini_ecommerce.exception.dto.ErrorResponse;
 import com.farias.mini_ecommerce.modules.product.dto.request.ProductRequest;
 import com.farias.mini_ecommerce.modules.product.dto.response.ProductResponse;
 import com.farias.mini_ecommerce.modules.product.service.*;
@@ -48,7 +49,7 @@ public class ProductController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Product created.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid request.")
+            @ApiResponse(responseCode = "400", description = "Invalid request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })
     public ResponseEntity<Object> create(@Valid @RequestBody ProductRequest request) {
         var result = createProductService.execute(request);
@@ -63,8 +64,8 @@ public class ProductController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Return requested product.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponse.class))),
-            @ApiResponse(responseCode = "404", description = "Product not found."),
-            @ApiResponse(responseCode = "400", description = "Invalid request.")
+            @ApiResponse(responseCode = "404", description = "Product not found.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })
     public ResponseEntity<Object> getById(@PathVariable UUID id) {
         var result = getProductByIdService.execute(id);
@@ -79,7 +80,7 @@ public class ProductController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Returns all products.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponse.class))),
-            @ApiResponse(responseCode = "204", description = "Nothing found."),
+            @ApiResponse(responseCode = "204", description = "Nothing found.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
     })
     public ResponseEntity<Object> getAll(){
         var result = getAllProductsService.execute();
@@ -99,8 +100,8 @@ public class ProductController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Update specified product.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponse.class))),
-            @ApiResponse(responseCode = "404", description = "Product not found."),
-            @ApiResponse(responseCode = "400", description = "Invalid request."),
+            @ApiResponse(responseCode = "404", description = "Product not found.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
     })
     public ResponseEntity<Object> update(@Valid @RequestBody ProductRequest request, @PathVariable UUID id) {
         var result = updateProductService.execute(request, id);
@@ -115,8 +116,8 @@ public class ProductController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Delete specified product.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponse.class))),
-            @ApiResponse(responseCode = "404", description = "Product not found."),
-            @ApiResponse(responseCode = "400", description = "Invalid request."),
+            @ApiResponse(responseCode = "404", description = "Product not found.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
     })
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         deleteProductService.execute(id);

@@ -1,5 +1,6 @@
 package com.farias.mini_ecommerce.modules.user.controller;
 
+import com.farias.mini_ecommerce.exception.dto.ErrorResponse;
 import com.farias.mini_ecommerce.modules.user.dto.request.UserLoginRequest;
 import com.farias.mini_ecommerce.modules.user.dto.response.UserProfileResponse;
 import com.farias.mini_ecommerce.modules.user.dto.request.UserRegisterRequest;
@@ -51,7 +52,8 @@ public class UserController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "User created.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserRegisteredResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid request.")
+            @ApiResponse(responseCode = "400", description = "Invalid request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "409", description = "Email is already registered.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })
     public ResponseEntity<Object> register(@Valid @RequestBody UserRegisterRequest userRequest) {
         var response = registerUserService.execute(userRequest);
@@ -66,7 +68,7 @@ public class UserController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "User created.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserRegisteredResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid request.")
+            @ApiResponse(responseCode = "400", description = "Invalid request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })
     public ResponseEntity<Object> login(@Valid @RequestBody UserLoginRequest userRequest) {
         var response = loginUserService.execute(userRequest);
@@ -81,7 +83,7 @@ public class UserController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User profile.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserProfileResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid request.")
+            @ApiResponse(responseCode = "400", description = "Invalid request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })
     public ResponseEntity<Object> getProfile(@PathVariable UUID id) {
         var response = profileUserService.execute(id);
@@ -96,7 +98,8 @@ public class UserController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User updated.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserRegisteredResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid request.")
+            @ApiResponse(responseCode = "400", description = "Invalid request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "409", description = "New email already exists.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })
     public ResponseEntity<Object> update(@PathVariable UUID id, @Valid @RequestBody UserRegisterRequest userRequest) {
         var response = updateUserService.execute(id, userRequest);
