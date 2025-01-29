@@ -1,9 +1,6 @@
 package com.farias.mini_ecommerce.modules.user.repository;
 
 import com.farias.mini_ecommerce.modules.user.entity.User;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

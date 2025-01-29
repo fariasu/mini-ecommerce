@@ -3,7 +3,7 @@
 services:
   postgres:
     container_name: mini-ecommerce-postgres
-    image: postgres:latest
+    image: postgres:14
     ports:
       - "5432:5432"
     environment:

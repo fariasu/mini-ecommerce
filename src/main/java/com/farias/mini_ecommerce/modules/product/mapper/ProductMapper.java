@@ -1,8 +1,8 @@
 package com.farias.mini_ecommerce.modules.product.mapper;
 
-import com.farias.mini_ecommerce.modules.product.entity.Product;
 import com.farias.mini_ecommerce.modules.product.dto.request.ProductRequest;
 import com.farias.mini_ecommerce.modules.product.dto.response.ProductResponse;
+import com.farias.mini_ecommerce.modules.product.entity.Product;
 import org.mapstruct.*;
 
 import java.util.List;

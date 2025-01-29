@@ -5,7 +5,6 @@ import com.farias.mini_ecommerce.modules.user.dto.request.UserRegisterRequest;
 import com.farias.mini_ecommerce.modules.user.dto.response.UserRegisteredResponse;
 import com.farias.mini_ecommerce.modules.user.mapper.UserMapper;
 import com.farias.mini_ecommerce.modules.user.repository.UserRepository;
-import com.farias.mini_ecommerce.modules.product.service.GetAllProductsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -15,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class RegisterUserService {
 
-    private static final Logger logger = LoggerFactory.getLogger(GetAllProductsService.class);
+    private static final Logger logger = LoggerFactory.getLogger(RegisterUserService.class);
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;

@@ -2,8 +2,8 @@ package com.farias.mini_ecommerce.modules.user.controller;
 
 import com.farias.mini_ecommerce.exception.dto.ErrorResponse;
 import com.farias.mini_ecommerce.modules.user.dto.request.UserLoginRequest;
-import com.farias.mini_ecommerce.modules.user.dto.response.UserProfileResponse;
 import com.farias.mini_ecommerce.modules.user.dto.request.UserRegisterRequest;
+import com.farias.mini_ecommerce.modules.user.dto.response.UserProfileResponse;
 import com.farias.mini_ecommerce.modules.user.dto.response.UserRegisteredResponse;
 import com.farias.mini_ecommerce.modules.user.service.LoginUserService;
 import com.farias.mini_ecommerce.modules.user.service.ProfileUserService;

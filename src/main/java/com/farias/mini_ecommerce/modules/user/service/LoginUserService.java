@@ -1,17 +1,18 @@
 package com.farias.mini_ecommerce.modules.user.service;
 
 import com.farias.mini_ecommerce.exception.exceptions.BusinessException;
-import com.farias.mini_ecommerce.security.jwt.service.JwtTokenProvider;
 import com.farias.mini_ecommerce.modules.user.dto.request.UserLoginRequest;
 import com.farias.mini_ecommerce.modules.user.dto.response.UserLoggedResponse;
 import com.farias.mini_ecommerce.modules.user.repository.UserRepository;
+import com.farias.mini_ecommerce.security.jwt.service.JwtTokenProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class LoginUserService {
