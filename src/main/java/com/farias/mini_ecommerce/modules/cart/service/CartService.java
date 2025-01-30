@@ -7,6 +7,7 @@ import com.farias.mini_ecommerce.modules.cart.entity.Cart;
 import com.farias.mini_ecommerce.modules.cart.entity.CartItem;
 import com.farias.mini_ecommerce.modules.cart.entity.enums.CartStatus;
 import com.farias.mini_ecommerce.modules.cart.repository.CartRepository;
+import com.farias.mini_ecommerce.modules.cart.shared.validator.Validator;
 import com.farias.mini_ecommerce.modules.product.entity.Product;
 import com.farias.mini_ecommerce.modules.product.repository.ProductRepository;
 import jakarta.transaction.Transactional;
@@ -23,25 +24,28 @@ public class CartService {
     private static final Logger logger = LoggerFactory.getLogger(CartService.class);
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
+    private final Validator validator;
     private final com.farias.mini_ecommerce.modules.cart.mapper.CartMapper cartMapper;
 
     public CartService(
             CartRepository cartRepository,
             ProductRepository productRepository,
-            com.farias.mini_ecommerce.modules.cart.mapper.CartMapper cartMapper
+            com.farias.mini_ecommerce.modules.cart.mapper.CartMapper cartMapper,
+            Validator validator
     ) {
         this.cartRepository = cartRepository;
         this.productRepository = productRepository;
         this.cartMapper = cartMapper;
+        this.validator = validator;
     }
 
     @Transactional
-    public CartResponse execute(CartRequest cartRequest, String userId) {
-        UUID userIdUUID = validateUserId(userId);
+    public CartResponse execute(UUID productId, CartRequest cartRequest, String userId) {
+        var userIdUUID = validator.validateUserId(userId);
         validateQuantity(cartRequest.quantity());
 
-        Product product = validateProduct(cartRequest);
-        Cart cart = findOrCreateCart(userIdUUID);
+        Product product = validateProduct(productId, cartRequest);
+        var cart = findOrCreateCart(userIdUUID);
 
         addItemToCart(cart, product, cartRequest.quantity());
         cart.updateTotalPrice();
@@ -52,15 +56,6 @@ public class CartService {
         return cartMapper.toResponse(cart);
     }
 
-    private UUID validateUserId(String userId) {
-        try {
-            return UUID.fromString(userId);
-        } catch (IllegalArgumentException e) {
-            logger.error("Invalid user ID format: {}", userId);
-            throw new BusinessException("Invalid user ID", HttpStatus.BAD_REQUEST);
-        }
-    }
-
     private void validateQuantity(int quantity) {
         if (quantity <= 0) {
             logger.warn("Invalid quantity requested: {}", quantity);
@@ -68,12 +63,12 @@ public class CartService {
         }
     }
 
-    private Product validateProduct(CartRequest cartRequest) {
-        return productRepository.findById(cartRequest.productId())
+    private Product validateProduct(UUID productId, CartRequest cartRequest) {
+        return productRepository.findById(productId)
                 .filter(product -> product.getStock() >= cartRequest.quantity())
                 .orElseThrow(() -> {
-                    logger.warn("Product {} unavailable or not found", cartRequest.productId());
-                    return new BusinessException("Product unavailable", HttpStatus.NOT_FOUND);
+                    logger.warn("Product {} unavailable or not found", productId);
+                    return new BusinessException("Product out of stock.", HttpStatus.NOT_FOUND);
                 });
     }
 
