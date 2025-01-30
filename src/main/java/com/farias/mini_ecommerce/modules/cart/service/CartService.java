@@ -16,6 +16,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -48,7 +50,7 @@ public class CartService {
         var cart = findOrCreateCart(userIdUUID);
 
         addItemToCart(cart, product, cartRequest.quantity());
-        cart.updateTotalPrice();
+        updateTotalPrice(cart);
 
         cartRepository.save(cart);
         logger.info("Item added to cart {} for user {}", cart.getId(), userIdUUID);
@@ -85,11 +87,49 @@ public class CartService {
     }
 
     private void addItemToCart(Cart cart, Product product, int quantity) {
-        cart.addProduct(
+        addProduct(
                 CartItem.builder()
                 .product(product)
                 .unitPrice(product.getPrice())
                 .quantity(quantity)
-                .build());
+                .build(), cart);
+    }
+
+    public void addProduct(CartItem newItem, Cart cart) {
+        var product = newItem.getProduct();
+        int requestedQuantity = newItem.getQuantity();
+
+        if (requestedQuantity > product.getStock()) {
+            throw new BusinessException("Insufficient stock for product: " + product.getId(),
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        Optional<CartItem> existingItemOpt = findExistingItem(product.getId(), cart);
+
+        if (existingItemOpt.isPresent()) {
+            var existingItem = existingItemOpt.get();
+            int newTotalQuantity = existingItem.getQuantity() + requestedQuantity;
+
+            if (newTotalQuantity > product.getStock()) {
+                throw new BusinessException("Exceeds available stock. Current stock: " + product.getStock(),
+                        HttpStatus.BAD_REQUEST);
+            }
+            existingItem.setQuantity(newTotalQuantity);
+        } else {
+            newItem.setCart(cart);
+            cart.getItems().add(newItem);
+        }
+    }
+
+    private Optional<CartItem> findExistingItem(UUID productId, Cart cart) {
+        return cart.getItems().stream()
+                .filter(item -> item.getProduct().getId().equals(productId))
+                .findFirst();
+    }
+
+    public void updateTotalPrice(Cart cart) {
+        cart.setTotalPrice(cart.getItems().stream()
+                .map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add));
     }
 }
