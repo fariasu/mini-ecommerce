@@ -1,8 +1,6 @@
 package com.farias.mini_ecommerce.config;
 
 import com.farias.mini_ecommerce.security.jwt.filter.JwtAuthenticationFilter;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
-import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
