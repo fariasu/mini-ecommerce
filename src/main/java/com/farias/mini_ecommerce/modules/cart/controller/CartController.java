@@ -20,7 +20,7 @@ public class CartController {
         this.cartService = cartService;
     }
 
-    @PostMapping("/create")
+    @PostMapping("/products")
     public ResponseEntity<Object> add(@Valid @RequestBody CartRequest cartRequest, @AuthenticationPrincipal String userId) {
         var result = cartService.execute(cartRequest, userId);
         return ResponseEntity.ok(result);

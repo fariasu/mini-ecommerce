@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity(name = "tb_cart_items")
@@ -32,7 +33,8 @@ public class CartItem {
     private Product product;
 
     @Min(1)
-    private Integer quantity;
+    @Builder.Default
+    private Integer quantity = 1;
 
-    private Double unitPrice;
+    private BigDecimal unitPrice;
 }

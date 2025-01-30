@@ -1,15 +1,15 @@
 package com.farias.mini_ecommerce.modules.cart.entity;
 
 import com.farias.mini_ecommerce.modules.cart.entity.enums.CartStatus;
-import com.farias.mini_ecommerce.modules.product.entity.Product;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
 @Entity(name = "tb_carts")
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"userId", "status"}))
 @Getter
 @Setter
 @AllArgsConstructor
@@ -26,7 +26,7 @@ public class Cart {
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> items;
 
-    private Double totalPrice;
+    private BigDecimal totalPrice;
 
     private CartStatus status;
 
@@ -41,7 +41,6 @@ public class Cart {
         for (CartItem item : this.items){
             if(item.getProduct().getId().equals(cartItem.getProduct().getId())){
                 item.setQuantity(item.getQuantity() + cartItem.getQuantity());
-                this.items.add(cartItem);
                 cartItem.setCart(this);
                 return;
             }
@@ -52,5 +51,11 @@ public class Cart {
         this.items.remove(cartItem);
 
         cartItem.setCart(null);
+    }
+
+    public void updateTotalPrice() {
+        this.totalPrice = items.stream()
+                .map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

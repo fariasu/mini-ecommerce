@@ -8,6 +8,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -27,7 +28,7 @@ public class Product {
 
     private String description;
 
-    private Double price;
+    private BigDecimal price;
 
     private Integer stock;
 

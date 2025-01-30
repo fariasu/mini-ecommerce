@@ -6,17 +6,15 @@ import com.farias.mini_ecommerce.modules.cart.dto.response.CartResponse;
 import com.farias.mini_ecommerce.modules.cart.entity.Cart;
 import com.farias.mini_ecommerce.modules.cart.entity.CartItem;
 import com.farias.mini_ecommerce.modules.cart.entity.enums.CartStatus;
-import com.farias.mini_ecommerce.modules.cart.mapper.CartMapper;
 import com.farias.mini_ecommerce.modules.cart.repository.CartRepository;
+import com.farias.mini_ecommerce.modules.product.entity.Product;
 import com.farias.mini_ecommerce.modules.product.repository.ProductRepository;
-import com.farias.mini_ecommerce.modules.user.service.LoginUserService;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -25,71 +23,78 @@ public class CartService {
     private static final Logger logger = LoggerFactory.getLogger(CartService.class);
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
-    private final CartMapper cartMapper;
+    private final com.farias.mini_ecommerce.modules.cart.mapper.CartMapper cartMapper;
 
     public CartService(
             CartRepository cartRepository,
             ProductRepository productRepository,
-            CartMapper cartMapper) {
+            com.farias.mini_ecommerce.modules.cart.mapper.CartMapper cartMapper
+    ) {
         this.cartRepository = cartRepository;
         this.productRepository = productRepository;
         this.cartMapper = cartMapper;
     }
 
+    @Transactional
     public CartResponse execute(CartRequest cartRequest, String userId) {
+        UUID userIdUUID = validateUserId(userId);
+        validateQuantity(cartRequest.quantity());
 
-        var product = productRepository.findById(cartRequest.productId())
-                .orElseThrow(() -> {
-                logger.warn("Product with id {} not found", cartRequest.productId());
-                return new BusinessException("Product doesnt exists.", HttpStatus.BAD_REQUEST);
-                });
+        Product product = validateProduct(cartRequest);
+        Cart cart = findOrCreateCart(userIdUUID);
 
-        if(product.getStock() <= 0 || product.getStock() < cartRequest.quantity()){
-            throw new BusinessException("Insufficient stock.", HttpStatus.BAD_REQUEST);
-        }
-
-        var cartOpt = cartRepository.findByUserIdAndStatus(UUID.fromString(userId), CartStatus.OPEN);
-
-        if(cartOpt.isPresent()){
-            var cart = cartOpt.get();
-
-            var cartItem = CartItem.builder()
-                    .product(product)
-                    .unitPrice(product.getPrice())
-                    .quantity(cartRequest.quantity())
-                    .build();
-
-            cart.addProduct(cartItem);
-            cart.setTotalPrice(cart.getItems()
-                    .stream()
-                    .mapToDouble(CartItem::getUnitPrice)
-                    .sum());
-
-            cartRepository.saveAndFlush(cart);
-
-            return new CartResponse(cart.getId(), UUID.fromString(userId), cart.getItems(), cart.getTotalPrice(), cart.getStatus());
-        }
-
-        var cart = Cart.builder()
-                .items(new ArrayList<>())
-                .userId(UUID.fromString(userId))
-                .status(CartStatus.OPEN)
-                .id(UUID.randomUUID())
-                .build();
-
-        var cartItem = CartItem.builder()
-                .product(product)
-                .unitPrice(product.getPrice())
-                .build();
-
-        cart.addProduct(cartItem);
-        cart.setTotalPrice(cart.getItems()
-                .stream()
-                .mapToDouble(CartItem::getUnitPrice)
-                .sum());
+        addItemToCart(cart, product, cartRequest.quantity());
+        cart.updateTotalPrice();
 
         cartRepository.save(cart);
+        logger.info("Item added to cart {} for user {}", cart.getId(), userIdUUID);
 
-        return new CartResponse(cart.getId(), UUID.fromString(userId), cart.getItems(), cart.getTotalPrice(), cart.getStatus());
+        return cartMapper.toResponse(cart);
+    }
+
+    private UUID validateUserId(String userId) {
+        try {
+            return UUID.fromString(userId);
+        } catch (IllegalArgumentException e) {
+            logger.error("Invalid user ID format: {}", userId);
+            throw new BusinessException("Invalid user ID", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    private void validateQuantity(int quantity) {
+        if (quantity <= 0) {
+            logger.warn("Invalid quantity requested: {}", quantity);
+            throw new BusinessException("Quantity must be greater than zero", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    private Product validateProduct(CartRequest cartRequest) {
+        return productRepository.findById(cartRequest.productId())
+                .filter(product -> product.getStock() >= cartRequest.quantity())
+                .orElseThrow(() -> {
+                    logger.warn("Product {} unavailable or not found", cartRequest.productId());
+                    return new BusinessException("Product unavailable", HttpStatus.BAD_REQUEST);
+                });
+    }
+
+    private Cart findOrCreateCart(UUID userId) {
+        return cartRepository.findByUserIdAndStatus(userId, CartStatus.OPEN)
+                .orElseGet(() -> {
+                    Cart newCart = Cart.builder()
+                            .userId(userId)
+                            .status(CartStatus.OPEN)
+                            .items(new java.util.ArrayList<>())
+                            .build();
+                    return cartRepository.save(newCart);
+                });
+    }
+
+    private void addItemToCart(Cart cart, Product product, int quantity) {
+        cart.addProduct(
+                CartItem.builder()
+                .product(product)
+                .unitPrice(product.getPrice())
+                .quantity(quantity)
+                .build());
     }
 }
