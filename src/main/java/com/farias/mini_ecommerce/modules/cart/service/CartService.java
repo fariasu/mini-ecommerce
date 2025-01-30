@@ -73,7 +73,7 @@ public class CartService {
                 .filter(product -> product.getStock() >= cartRequest.quantity())
                 .orElseThrow(() -> {
                     logger.warn("Product {} unavailable or not found", cartRequest.productId());
-                    return new BusinessException("Product unavailable", HttpStatus.BAD_REQUEST);
+                    return new BusinessException("Product unavailable", HttpStatus.NOT_FOUND);
                 });
     }
 
