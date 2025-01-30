@@ -28,8 +28,9 @@ public class User {
 
     private String password;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
-    private UserRole userRole;
+    private UserRole userRole = UserRole.ROLE_USER;
 
     @CreationTimestamp
     private Instant createdAt;
