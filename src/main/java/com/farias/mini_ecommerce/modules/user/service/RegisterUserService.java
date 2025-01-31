@@ -5,17 +5,14 @@ import com.farias.mini_ecommerce.modules.user.dto.request.UserRegisterRequest;
 import com.farias.mini_ecommerce.modules.user.dto.response.UserRegisteredResponse;
 import com.farias.mini_ecommerce.modules.user.mapper.UserMapper;
 import com.farias.mini_ecommerce.modules.user.repository.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class RegisterUserService {
-
-    private static final Logger logger = LoggerFactory.getLogger(RegisterUserService.class);
-
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
@@ -32,7 +29,7 @@ public class RegisterUserService {
     public UserRegisteredResponse execute(UserRegisterRequest userRequest){
         userRepository.findByEmail(userRequest.email())
                 .ifPresent(user -> {
-                    logger.warn("User {} already exists", userRequest.email());
+                    log.warn("User {} already exists", userRequest.email());
                     throw new BusinessException("Email is already registered.", HttpStatus.CONFLICT);
                 });
 
@@ -40,7 +37,7 @@ public class RegisterUserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
 
-        logger.info("User {} created", userRequest.email());
+        log.info("User {} created", userRequest.email());
 
         return userMapper.toUserResponse(user);
     }

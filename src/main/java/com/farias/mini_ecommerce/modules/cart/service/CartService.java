@@ -11,8 +11,7 @@ import com.farias.mini_ecommerce.modules.cart.shared.validator.Validator;
 import com.farias.mini_ecommerce.modules.product.entity.Product;
 import com.farias.mini_ecommerce.modules.product.repository.ProductRepository;
 import jakarta.transaction.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -21,9 +20,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class CartService {
 
-    private static final Logger logger = LoggerFactory.getLogger(CartService.class);
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
     private final Validator validator;
@@ -53,14 +52,14 @@ public class CartService {
         updateTotalPrice(cart);
 
         cartRepository.save(cart);
-        logger.info("Item added to cart {} for user {}", cart.getId(), userIdUUID);
+        log.info("Item added to cart {} for user {}", cart.getId(), userIdUUID);
 
         return cartMapper.toResponse(cart);
     }
 
     private void validateQuantity(int quantity) {
         if (quantity <= 0) {
-            logger.warn("Invalid quantity requested: {}", quantity);
+            log.warn("Invalid quantity requested: {}", quantity);
             throw new BusinessException("Quantity must be greater than zero", HttpStatus.BAD_REQUEST);
         }
     }
@@ -69,7 +68,7 @@ public class CartService {
         return productRepository.findById(productId)
                 .filter(product -> product.getStock() >= cartRequest.quantity())
                 .orElseThrow(() -> {
-                    logger.warn("Product {} unavailable or not found", productId);
+                    log.warn("Product {} unavailable or not found", productId);
                     return new BusinessException("Product out of stock.", HttpStatus.NOT_FOUND);
                 });
     }

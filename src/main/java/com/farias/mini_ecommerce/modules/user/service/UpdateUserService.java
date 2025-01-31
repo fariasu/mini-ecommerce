@@ -5,8 +5,7 @@ import com.farias.mini_ecommerce.modules.user.dto.request.UserRegisterRequest;
 import com.farias.mini_ecommerce.modules.user.dto.response.UserRegisteredResponse;
 import com.farias.mini_ecommerce.modules.user.mapper.UserMapper;
 import com.farias.mini_ecommerce.modules.user.repository.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,9 +14,8 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class UpdateUserService {
-    private static final Logger logger = LoggerFactory.getLogger(UpdateUserService.class);
-
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
@@ -32,11 +30,11 @@ public class UpdateUserService {
     }
 
     public UserRegisteredResponse execute(UUID id, UserRegisterRequest userRegisterRequest) {
-        logger.info("Attempting to update user with id {}", id);
+        log.info("Attempting to update user with id {}", id);
 
         var user = userRepository.findById(id)
                 .orElseThrow(() -> {
-                    logger.warn("User with id {} not found", id);
+                    log.warn("User with id {} not found", id);
                     return new BusinessException("User ID not found.", HttpStatus.BAD_REQUEST);
                 });
 
@@ -53,7 +51,7 @@ public class UpdateUserService {
         userMapper.updateUser(userRegisterRequest, user);
         userRepository.save(user);
 
-        logger.info("Updated user with id {}", id);
+        log.info("Updated user with id {}", id);
 
         return userMapper.toUserResponse(user);
     }
