@@ -5,19 +5,16 @@ import com.farias.mini_ecommerce.modules.user.dto.request.UserLoginRequest;
 import com.farias.mini_ecommerce.modules.user.dto.request.UserRegisterRequest;
 import com.farias.mini_ecommerce.modules.user.dto.response.UserProfileResponse;
 import com.farias.mini_ecommerce.modules.user.dto.response.UserRegisteredResponse;
-import com.farias.mini_ecommerce.modules.user.service.LoginUserService;
-import com.farias.mini_ecommerce.modules.user.service.ProfileUserService;
-import com.farias.mini_ecommerce.modules.user.service.RegisterUserService;
-import com.farias.mini_ecommerce.modules.user.service.UpdateUserService;
+import com.farias.mini_ecommerce.modules.user.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -25,23 +22,25 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/v1/user")
 @Tag(name = "User", description = "Operations related to the Users.")
-@SecurityRequirement(name = "bearerAuth")
 public class UserController {
 
     private final RegisterUserService registerUserService;
     private final LoginUserService loginUserService;
     private final ProfileUserService profileUserService;
     private final UpdateUserService updateUserService;
+    private final DeleteUserService deleteUserService;
 
     public UserController(
             RegisterUserService registerUserService,
             LoginUserService loginUserService,
             ProfileUserService profileUserService,
-            UpdateUserService updateUserService) {
+            UpdateUserService updateUserService,
+            DeleteUserService deleteUserService) {
         this.registerUserService = registerUserService;
         this.loginUserService = loginUserService;
         this.profileUserService = profileUserService;
         this.updateUserService = updateUserService;
+        this.deleteUserService = deleteUserService;
     }
 
     @PostMapping("/register")
@@ -105,4 +104,21 @@ public class UserController {
         var response = updateUserService.execute(id, userRequest);
         return ResponseEntity.ok().body(response);
     }
+
+    @DeleteMapping("/profile/delete/{id}")
+    @Operation(
+            summary = "Delete existent user by id.",
+            description = "Endpoint that delete a existent user by id.",
+            tags = {"User"}
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User updated.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserRegisteredResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "409", description = "New email already exists.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    public ResponseEntity<Object> delete(@AuthenticationPrincipal String uuid, @PathVariable UUID id) {
+        deleteUserService.execute(uuid, id);
+        return ResponseEntity.ok().build();
+    }
+
 }
