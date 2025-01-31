@@ -53,7 +53,7 @@ public class CartController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/get")
+    @GetMapping("/")
     @Operation(
             summary = "Get cart of current logged user.",
             description = "Endpoint that gets the cart of the logged user.",

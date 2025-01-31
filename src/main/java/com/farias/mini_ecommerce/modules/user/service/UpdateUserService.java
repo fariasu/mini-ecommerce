@@ -22,9 +22,10 @@ public class UpdateUserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
-    public UpdateUserService(UserRepository userRepository,
-                               UserMapper userMapper,
-                               PasswordEncoder passwordEncoder) {
+    public UpdateUserService(
+            UserRepository userRepository,
+            UserMapper userMapper,
+            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;

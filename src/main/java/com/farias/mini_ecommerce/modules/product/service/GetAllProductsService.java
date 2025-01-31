@@ -23,7 +23,7 @@ public class GetAllProductsService {
     public List<ProductResponse> execute() {
         logger.info("Fetching all products sorted by name in descending order.");
 
-        var products = productRepository.findAllByOrderByNameDesc();
+        var products = productRepository.findAllByOrderByNameAsc();
 
         if(products.isEmpty()) {
             logger.warn("No products found.");
