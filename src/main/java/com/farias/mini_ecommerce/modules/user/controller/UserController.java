@@ -105,7 +105,7 @@ public class UserController {
         return ResponseEntity.ok().body(response);
     }
 
-    @DeleteMapping("/profile/delete/{id}")
+    @DeleteMapping("/profile/{id}")
     @Operation(
             summary = "Delete existent user by id.",
             description = "Endpoint that delete a existent user by id.",

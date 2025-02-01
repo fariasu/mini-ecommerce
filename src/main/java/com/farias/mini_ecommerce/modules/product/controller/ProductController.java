@@ -39,7 +39,7 @@ public class ProductController {
         this.deleteProductService = deleteProductService;
     }
 
-    @PostMapping("/create")
+    @PostMapping("/")
     @Operation(
             summary = "Create new product.",
             description = "Endpoint that creates a new product in system.",
@@ -54,7 +54,7 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
-    @GetMapping("/get/{id}")
+    @GetMapping("/{id}")
     @Operation(
             summary = "Get product by id.",
             description = "Endpoint that gets the product by id.",
@@ -70,7 +70,7 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
-    @GetMapping("/get")
+    @GetMapping("/")
     @Operation(
             summary = "Get all products.",
             description = "Endpoint that gets all products in system.",
@@ -90,7 +90,7 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     @Operation(
             summary = "Update existent product by id.",
             description = "Endpoint that update a existent product by id.",
@@ -106,7 +106,7 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     @Operation(
             summary = "Delete existent product by id.",
             description = "Endpoint that deletes existent product by id.",

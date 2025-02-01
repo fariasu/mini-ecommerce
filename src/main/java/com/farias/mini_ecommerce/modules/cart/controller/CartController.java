@@ -69,7 +69,7 @@ public class CartController {
         return ResponseEntity.ok().body(result);
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping("/")
     @Operation(
             summary = "Delete cart of current logged user.",
             description = "Endpoint that deletes the cart of the logged user.",
