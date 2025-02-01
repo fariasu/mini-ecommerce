@@ -4,7 +4,7 @@ import com.farias.mini_ecommerce.modules.product.dto.response.ProductResponse;
 import com.farias.mini_ecommerce.modules.product.mapper.ProductMapper;
 import com.farias.mini_ecommerce.modules.product.repository.ProductRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,10 +20,10 @@ public class GetAllProductsService {
         this.productMapper = productMapper;
     }
 
-    public List<ProductResponse> execute() {
+    public List<ProductResponse> execute(Pageable pageable) {
         log.info("Fetching all products sorted by name in descending order.");
 
-        var products = productRepository.findAllByOrderByNameAsc();
+        var products = productRepository.findAllByOrderByNameAsc(pageable);
 
         if(products.isEmpty()) {
             log.warn("No products found.");
