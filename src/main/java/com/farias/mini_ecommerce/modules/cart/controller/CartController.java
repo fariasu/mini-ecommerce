@@ -3,10 +3,7 @@ package com.farias.mini_ecommerce.modules.cart.controller;
 import com.farias.mini_ecommerce.exception.dto.ErrorResponse;
 import com.farias.mini_ecommerce.modules.cart.dto.request.CartRequest;
 import com.farias.mini_ecommerce.modules.cart.dto.response.CartResponse;
-import com.farias.mini_ecommerce.modules.cart.service.CartDeleteService;
-import com.farias.mini_ecommerce.modules.cart.service.CartGetService;
-import com.farias.mini_ecommerce.modules.cart.service.CartItemDeleteService;
-import com.farias.mini_ecommerce.modules.cart.service.CartService;
+import com.farias.mini_ecommerce.modules.cart.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -29,17 +26,20 @@ public class CartController {
     private final CartGetService cartGetService;
     private final CartDeleteService cartDeleteService;
     private final CartItemDeleteService cartItemDeleteService;
+    private final CartFinalizeService cartFinalizeService;
 
     public CartController(
             CartService cartService,
             CartGetService cartGetService,
             CartDeleteService cartDeleteService,
-            CartItemDeleteService cartItemDeleteService
+            CartItemDeleteService cartItemDeleteService,
+            CartFinalizeService cartFinalizeService
     ) {
         this.cartService = cartService;
         this.cartGetService = cartGetService;
         this.cartDeleteService = cartDeleteService;
         this.cartItemDeleteService = cartItemDeleteService;
+        this.cartFinalizeService = cartFinalizeService;
     }
 
     @PostMapping("/{productId}")
@@ -104,5 +104,22 @@ public class CartController {
     public ResponseEntity<Object> deleteCartItem(@AuthenticationPrincipal String userId, @PathVariable UUID productId) {
         cartItemDeleteService.execute(userId, productId);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/finalize")
+    @Operation(
+            summary = "Finalize cart.",
+            description = "Endpoint that finalizes the cart.",
+            tags = {"Cart"}
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Cart finalized successfully."),
+            @ApiResponse(responseCode = "400", description = "Invalid request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Cart not found.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "409", description = "Cart has products with insufficient stock.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    public ResponseEntity<Object> finalizeCart(@AuthenticationPrincipal String userId) {
+        var response = cartFinalizeService.execute(userId);
+        return ResponseEntity.ok().body(response);
     }
 }

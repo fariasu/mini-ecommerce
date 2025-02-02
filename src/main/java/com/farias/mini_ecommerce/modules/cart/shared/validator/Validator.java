@@ -17,7 +17,7 @@ public class Validator {
             return UUID.fromString(userId);
         } catch (IllegalArgumentException e) {
             logger.error("Invalid user ID format: {}", userId);
-            throw new BusinessException("Invalid user ID", HttpStatus.BAD_REQUEST);
+            throw new BusinessException("Unauthorized.", HttpStatus.UNAUTHORIZED);
         }
     }
 }
