@@ -1,11 +1,10 @@
 package com.farias.mini_ecommerce.modules.cart.service;
 
-import com.farias.mini_ecommerce.exception.exceptions.BusinessException;
+import com.farias.mini_ecommerce.exception.exceptions.CartNotFoundException;
 import com.farias.mini_ecommerce.modules.cart.entity.enums.CartStatus;
 import com.farias.mini_ecommerce.modules.cart.repository.CartRepository;
 import com.farias.mini_ecommerce.modules.cart.shared.validator.Validator;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,10 +25,7 @@ public class CartDeleteService {
     var userIdUUID = validator.validateUserId(userId);
 
     var cart = cartRepository.findByUserIdAndStatus(userIdUUID, CartStatus.OPEN)
-            .orElseThrow(() -> {
-                log.warn("Cart with id {} not found", userIdUUID);
-                return new BusinessException("Cart not found.", HttpStatus.NOT_FOUND);
-            });
+            .orElseThrow(CartNotFoundException::new);
 
     cartRepository.deleteById(cart.getId());
     log.info("Cart with id {} deleted", cart.getId());

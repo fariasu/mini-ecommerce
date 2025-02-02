@@ -1,12 +1,12 @@
 package com.farias.mini_ecommerce.modules.cart.service;
 
-import com.farias.mini_ecommerce.exception.exceptions.BusinessException;
+import com.farias.mini_ecommerce.exception.exceptions.InvalidCartException;
+import com.farias.mini_ecommerce.exception.exceptions.ProductNotFoundException;
 import com.farias.mini_ecommerce.modules.cart.entity.enums.CartStatus;
 import com.farias.mini_ecommerce.modules.cart.repository.CartItemRepository;
 import com.farias.mini_ecommerce.modules.cart.repository.CartRepository;
 import com.farias.mini_ecommerce.modules.cart.shared.validator.Validator;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -35,18 +35,12 @@ public class CartItemDeleteService {
         var userUUID = validator.validateUserId(userId);
 
         var cart = cartRepository.findByUserIdAndStatus(userUUID, CartStatus.OPEN)
-                .orElseThrow(() -> {
-                    log.warn("Current logged user:{} doesnt have a cart.", userId);
-                    return new BusinessException("Current logged user doesnt have a cart.", HttpStatus.NOT_FOUND);
-                });
+                .orElseThrow(InvalidCartException::new);
 
         var cartItem = cart.getItems().stream()
                 .filter(item -> item.getProduct().getId().equals(productId))
                 .findFirst()
-                .orElseThrow(() -> {
-                    log.warn("This product: {} doesnt exists inside the cart of current logged user: {}.", productId, userId);
-                    return new BusinessException("This product doesnt exists inside the cart of current logged user", HttpStatus.NOT_FOUND);
-                });
+                .orElseThrow(ProductNotFoundException::new);
 
         cartItemRepository.deleteByProductId(cartItem.getProduct().getId());
         log.info("Cart item: {} of user: {} delete.", productId, userId);

@@ -1,6 +1,8 @@
 package com.farias.mini_ecommerce.modules.cart.service;
 
-import com.farias.mini_ecommerce.exception.exceptions.BusinessException;
+import com.farias.mini_ecommerce.exception.exceptions.InsufficientStockException;
+import com.farias.mini_ecommerce.exception.exceptions.InvalidCartException;
+import com.farias.mini_ecommerce.exception.exceptions.ProductNotFoundException;
 import com.farias.mini_ecommerce.modules.cart.dto.response.ResponseOrderGenerated;
 import com.farias.mini_ecommerce.modules.cart.entity.CartItem;
 import com.farias.mini_ecommerce.modules.cart.entity.enums.CartStatus;
@@ -10,7 +12,6 @@ import com.farias.mini_ecommerce.modules.product.entity.Product;
 import com.farias.mini_ecommerce.modules.product.repository.ProductRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -42,10 +43,7 @@ public class CartFinalizeService {
         var userUUID = validator.validateUserId(userID);
 
         var cart = cartRepository.findByUserIdAndStatus(userUUID, CartStatus.OPEN)
-                .orElseThrow(() -> {
-                    log.warn("Cart not found for user id {}", userID);
-                    return new BusinessException("Current user must have a cart.", HttpStatus.NOT_FOUND);
-                });
+                .orElseThrow(InvalidCartException::new);
 
         var cartProducts = cart.getItems()
                 .stream()
@@ -64,12 +62,10 @@ public class CartFinalizeService {
         for (var item : cartProducts) {
             var product = productMap.get(item.getId());
             if (product == null) {
-                log.warn("Product not found for id {}", item.getId());
-                throw new BusinessException("Product not found.", HttpStatus.NOT_FOUND);
+                throw new ProductNotFoundException();
             }
             if (product.getStock() < item.getStock()) {
-                log.warn("Product has not enough stock {}", item.getId());
-                throw new BusinessException("Product has not enough stock.", HttpStatus.CONFLICT);
+                throw new InsufficientStockException();
             }
 
             product.setStock(product.getStock() - item.getStock());

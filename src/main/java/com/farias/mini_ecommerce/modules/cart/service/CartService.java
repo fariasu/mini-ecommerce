@@ -1,6 +1,6 @@
 package com.farias.mini_ecommerce.modules.cart.service;
 
-import com.farias.mini_ecommerce.exception.exceptions.BusinessException;
+import com.farias.mini_ecommerce.exception.exceptions.InsufficientStockException;
 import com.farias.mini_ecommerce.modules.cart.dto.request.CartRequest;
 import com.farias.mini_ecommerce.modules.cart.dto.response.CartResponse;
 import com.farias.mini_ecommerce.modules.cart.entity.Cart;
@@ -12,7 +12,6 @@ import com.farias.mini_ecommerce.modules.product.entity.Product;
 import com.farias.mini_ecommerce.modules.product.repository.ProductRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -43,7 +42,6 @@ public class CartService {
     @Transactional
     public CartResponse execute(UUID productId, CartRequest cartRequest, String userId) {
         var userIdUUID = validator.validateUserId(userId);
-        validateQuantity(cartRequest.quantity());
 
         Product product = validateProduct(productId, cartRequest);
         var cart = findOrCreateCart(userIdUUID);
@@ -57,20 +55,10 @@ public class CartService {
         return cartMapper.toResponse(cart);
     }
 
-    private void validateQuantity(int quantity) {
-        if (quantity <= 0) {
-            log.warn("Invalid quantity requested: {}", quantity);
-            throw new BusinessException("Quantity must be greater than zero", HttpStatus.BAD_REQUEST);
-        }
-    }
-
     private Product validateProduct(UUID productId, CartRequest cartRequest) {
         return productRepository.findById(productId)
                 .filter(product -> product.getStock() >= cartRequest.quantity())
-                .orElseThrow(() -> {
-                    log.warn("Product {} unavailable or not found", productId);
-                    return new BusinessException("Product out of stock.", HttpStatus.NOT_FOUND);
-                });
+                .orElseThrow(InsufficientStockException::new);
     }
 
     private Cart findOrCreateCart(UUID userId) {
@@ -99,8 +87,7 @@ public class CartService {
         int requestedQuantity = newItem.getQuantity();
 
         if (requestedQuantity > product.getStock()) {
-            throw new BusinessException("Insufficient stock for product: " + product.getId(),
-                    HttpStatus.BAD_REQUEST);
+            throw new InsufficientStockException();
         }
 
         Optional<CartItem> existingItemOpt = findExistingItem(product.getId(), cart);
@@ -110,8 +97,7 @@ public class CartService {
             int newTotalQuantity = existingItem.getQuantity() + requestedQuantity;
 
             if (newTotalQuantity > product.getStock()) {
-                throw new BusinessException("Exceeds available stock. Current stock: " + product.getStock(),
-                        HttpStatus.BAD_REQUEST);
+                throw new InsufficientStockException();
             }
             existingItem.setQuantity(newTotalQuantity);
         } else {
