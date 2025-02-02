@@ -1,4 +1,4 @@
-package com.farias.mini_ecommerce.exception.exceptions;
+package com.farias.mini_ecommerce.exception.exceptions.product;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

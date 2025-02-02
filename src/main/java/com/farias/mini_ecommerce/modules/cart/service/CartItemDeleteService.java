@@ -1,7 +1,7 @@
 package com.farias.mini_ecommerce.modules.cart.service;
 
-import com.farias.mini_ecommerce.exception.exceptions.InvalidCartException;
-import com.farias.mini_ecommerce.exception.exceptions.ProductNotFoundException;
+import com.farias.mini_ecommerce.exception.exceptions.cart.InvalidCartException;
+import com.farias.mini_ecommerce.exception.exceptions.product.ProductNotFoundException;
 import com.farias.mini_ecommerce.modules.cart.entity.enums.CartStatus;
 import com.farias.mini_ecommerce.modules.cart.repository.CartItemRepository;
 import com.farias.mini_ecommerce.modules.cart.repository.CartRepository;

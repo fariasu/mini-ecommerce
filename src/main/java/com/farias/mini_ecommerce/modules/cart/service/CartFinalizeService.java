@@ -1,8 +1,8 @@
 package com.farias.mini_ecommerce.modules.cart.service;
 
-import com.farias.mini_ecommerce.exception.exceptions.InsufficientStockException;
-import com.farias.mini_ecommerce.exception.exceptions.InvalidCartException;
-import com.farias.mini_ecommerce.exception.exceptions.ProductNotFoundException;
+import com.farias.mini_ecommerce.exception.exceptions.product.InsufficientStockException;
+import com.farias.mini_ecommerce.exception.exceptions.cart.InvalidCartException;
+import com.farias.mini_ecommerce.exception.exceptions.product.ProductNotFoundException;
 import com.farias.mini_ecommerce.modules.cart.dto.response.ResponseOrderGenerated;
 import com.farias.mini_ecommerce.modules.cart.entity.CartItem;
 import com.farias.mini_ecommerce.modules.cart.entity.enums.CartStatus;

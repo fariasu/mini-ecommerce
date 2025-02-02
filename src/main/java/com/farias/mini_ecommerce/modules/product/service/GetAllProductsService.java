@@ -26,7 +26,7 @@ public class GetAllProductsService {
         var products = productRepository.findAllByOrderByNameAsc(pageable);
 
         if(products.isEmpty()) {
-            log.warn("No products found.");
+            log.info("No products found.");
             return List.of();
         }
 

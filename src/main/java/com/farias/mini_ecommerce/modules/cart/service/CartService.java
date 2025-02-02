@@ -1,6 +1,6 @@
 package com.farias.mini_ecommerce.modules.cart.service;
 
-import com.farias.mini_ecommerce.exception.exceptions.InsufficientStockException;
+import com.farias.mini_ecommerce.exception.exceptions.product.InsufficientStockException;
 import com.farias.mini_ecommerce.modules.cart.dto.request.CartRequest;
 import com.farias.mini_ecommerce.modules.cart.dto.response.CartResponse;
 import com.farias.mini_ecommerce.modules.cart.entity.Cart;

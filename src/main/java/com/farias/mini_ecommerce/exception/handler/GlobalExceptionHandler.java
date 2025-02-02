@@ -2,6 +2,10 @@ package com.farias.mini_ecommerce.exception.handler;
 
 import com.farias.mini_ecommerce.exception.dto.ErrorResponse;
 import com.farias.mini_ecommerce.exception.exceptions.*;
+import com.farias.mini_ecommerce.exception.exceptions.cart.CartNotFoundException;
+import com.farias.mini_ecommerce.exception.exceptions.product.InsufficientStockException;
+import com.farias.mini_ecommerce.exception.exceptions.cart.InvalidCartException;
+import com.farias.mini_ecommerce.exception.exceptions.product.ProductNotFoundException;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
