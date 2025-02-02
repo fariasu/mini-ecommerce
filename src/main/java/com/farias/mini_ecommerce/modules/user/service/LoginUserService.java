@@ -1,12 +1,11 @@
 package com.farias.mini_ecommerce.modules.user.service;
 
-import com.farias.mini_ecommerce.exception.exceptions.BusinessException;
+import com.farias.mini_ecommerce.exception.exceptions.user.InvalidUsernameOrPasswordException;
 import com.farias.mini_ecommerce.modules.user.dto.request.UserLoginRequest;
 import com.farias.mini_ecommerce.modules.user.dto.response.UserLoggedResponse;
 import com.farias.mini_ecommerce.modules.user.repository.UserRepository;
 import com.farias.mini_ecommerce.security.jwt.service.JwtTokenProvider;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,18 +32,15 @@ public class LoginUserService {
     @Transactional(readOnly = true)
     public UserLoggedResponse execute(UserLoginRequest userLoginRequest){
         var user = userRepository.findByEmail(userLoginRequest.email())
-                .orElseThrow(() -> {
-                    log.warn("User not found {}", userLoginRequest.email());
-                    return new BusinessException("Invalid username or password.", HttpStatus.BAD_REQUEST);
-                });
+                .orElseThrow(InvalidUsernameOrPasswordException::new);
 
         var passwordMatches = passwordEncoder.matches(userLoginRequest.password(), user.getPassword());
         if(!passwordMatches) {
-            log.warn("Password does not match {}", userLoginRequest.email());
-            throw new BusinessException("Invalid username or password.", HttpStatus.BAD_REQUEST);
+            throw new InvalidUsernameOrPasswordException();
         }
 
         log.info("Attempting to create token {}", user.getId());
+
         String[] rolesArray = {user.getUserRole().toString()};
         Map<String, Object> claims = new HashMap<>();
         claims.put("roles", rolesArray);

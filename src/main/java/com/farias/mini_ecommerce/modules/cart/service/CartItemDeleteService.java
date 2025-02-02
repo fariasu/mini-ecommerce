@@ -5,7 +5,8 @@ import com.farias.mini_ecommerce.exception.exceptions.product.ProductNotFoundExc
 import com.farias.mini_ecommerce.modules.cart.entity.enums.CartStatus;
 import com.farias.mini_ecommerce.modules.cart.repository.CartItemRepository;
 import com.farias.mini_ecommerce.modules.cart.repository.CartRepository;
-import com.farias.mini_ecommerce.modules.cart.shared.validator.Validator;
+import com.farias.mini_ecommerce.modules.cart.shared.validator.UserValidator;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -17,22 +18,23 @@ public class CartItemDeleteService {
 
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
-    private final Validator validator;
+    private final UserValidator userValidator;
 
     public CartItemDeleteService(
             CartRepository cartRepository,
             CartItemRepository cartItemRepository,
-            Validator validator
+            UserValidator userValidator
     ) {
         this.cartRepository = cartRepository;
         this.cartItemRepository = cartItemRepository;
-        this.validator = validator;
+        this.userValidator = userValidator;
     }
 
+    @Transactional
     public void execute(String userId, UUID productId) {
         log.info("Attempting to delete cart item: {} of user: {}", productId, userId);
 
-        var userUUID = validator.validateUserId(userId);
+        var userUUID = userValidator.validateUserId(userId);
 
         var cart = cartRepository.findByUserIdAndStatus(userUUID, CartStatus.OPEN)
                 .orElseThrow(InvalidCartException::new);

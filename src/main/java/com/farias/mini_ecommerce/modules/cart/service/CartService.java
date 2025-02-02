@@ -7,7 +7,7 @@ import com.farias.mini_ecommerce.modules.cart.entity.Cart;
 import com.farias.mini_ecommerce.modules.cart.entity.CartItem;
 import com.farias.mini_ecommerce.modules.cart.entity.enums.CartStatus;
 import com.farias.mini_ecommerce.modules.cart.repository.CartRepository;
-import com.farias.mini_ecommerce.modules.cart.shared.validator.Validator;
+import com.farias.mini_ecommerce.modules.cart.shared.validator.UserValidator;
 import com.farias.mini_ecommerce.modules.product.entity.Product;
 import com.farias.mini_ecommerce.modules.product.repository.ProductRepository;
 import jakarta.transaction.Transactional;
@@ -24,24 +24,24 @@ public class CartService {
 
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
-    private final Validator validator;
+    private final UserValidator userValidator;
     private final com.farias.mini_ecommerce.modules.cart.mapper.CartMapper cartMapper;
 
     public CartService(
             CartRepository cartRepository,
             ProductRepository productRepository,
             com.farias.mini_ecommerce.modules.cart.mapper.CartMapper cartMapper,
-            Validator validator
+            UserValidator userValidator
     ) {
         this.cartRepository = cartRepository;
         this.productRepository = productRepository;
         this.cartMapper = cartMapper;
-        this.validator = validator;
+        this.userValidator = userValidator;
     }
 
     @Transactional
     public CartResponse execute(UUID productId, CartRequest cartRequest, String userId) {
-        var userIdUUID = validator.validateUserId(userId);
+        var userIdUUID = userValidator.validateUserId(userId);
 
         Product product = validateProduct(productId, cartRequest);
         var cart = findOrCreateCart(userIdUUID);

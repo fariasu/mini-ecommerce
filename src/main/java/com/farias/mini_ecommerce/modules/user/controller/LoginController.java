@@ -32,7 +32,7 @@ public class LoginController {
     @Operation(
             summary = "Login user with credentials.",
             description = "Endpoint that login user with credentials.",
-            tags = {"User"}
+            tags = {"Login"}
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "User created.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserRegisteredResponse.class))),

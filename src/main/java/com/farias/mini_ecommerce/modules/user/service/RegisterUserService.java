@@ -1,12 +1,12 @@
 package com.farias.mini_ecommerce.modules.user.service;
 
-import com.farias.mini_ecommerce.exception.exceptions.BusinessException;
+import com.farias.mini_ecommerce.exception.exceptions.user.EmailAlreadyExistsException;
 import com.farias.mini_ecommerce.modules.user.dto.request.UserRegisterRequest;
 import com.farias.mini_ecommerce.modules.user.dto.response.UserRegisteredResponse;
 import com.farias.mini_ecommerce.modules.user.mapper.UserMapper;
 import com.farias.mini_ecommerce.modules.user.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,11 +26,11 @@ public class RegisterUserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Transactional
     public UserRegisteredResponse execute(UserRegisterRequest userRequest){
         userRepository.findByEmail(userRequest.email())
                 .ifPresent(user -> {
-                    log.warn("User {} already exists", userRequest.email());
-                    throw new BusinessException("Email is already registered.", HttpStatus.CONFLICT);
+                    throw new EmailAlreadyExistsException();
                 });
 
         var user = userMapper.toUser(userRequest);

@@ -6,6 +6,7 @@ import com.farias.mini_ecommerce.modules.product.repository.ProductRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,6 +21,7 @@ public class GetAllProductsService {
         this.productMapper = productMapper;
     }
 
+    @Transactional(readOnly = true)
     public List<ProductResponse> execute(Pageable pageable) {
         log.info("Fetching all products sorted by name in descending order.");
 

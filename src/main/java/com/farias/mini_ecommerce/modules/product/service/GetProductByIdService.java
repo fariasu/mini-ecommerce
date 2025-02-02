@@ -6,6 +6,7 @@ import com.farias.mini_ecommerce.modules.product.mapper.ProductMapper;
 import com.farias.mini_ecommerce.modules.product.repository.ProductRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -20,6 +21,7 @@ public class GetProductByIdService {
         this.productMapper = productMapper;
     }
 
+    @Transactional(readOnly = true)
     public ProductResponse execute(UUID id){
         log.info("Starting to get Product by id: {}", id);
 
