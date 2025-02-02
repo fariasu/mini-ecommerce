@@ -21,7 +21,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/v1/product")
-@Tag(name = "Product", description = "Operations related to the Products.")
+@Tag(name = "Product", description = "Browse registered products or, as an administrator, manage the store's products.")
 public class ProductController {
     private final CreateProductService createProductService;
     private final GetProductByIdService getProductByIdService;

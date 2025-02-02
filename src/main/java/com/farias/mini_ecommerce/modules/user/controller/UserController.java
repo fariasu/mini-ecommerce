@@ -1,7 +1,6 @@
 package com.farias.mini_ecommerce.modules.user.controller;
 
 import com.farias.mini_ecommerce.exception.dto.ErrorResponse;
-import com.farias.mini_ecommerce.modules.user.dto.request.UserLoginRequest;
 import com.farias.mini_ecommerce.modules.user.dto.request.UserRegisterRequest;
 import com.farias.mini_ecommerce.modules.user.dto.response.UserProfileResponse;
 import com.farias.mini_ecommerce.modules.user.dto.response.UserRegisteredResponse;
@@ -21,29 +20,26 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/v1/user")
-@Tag(name = "User", description = "Operations related to the Users.")
+@Tag(name = "User", description = "Manage users, check login details and register administrators.")
 public class UserController {
 
     private final RegisterUserService registerUserService;
-    private final LoginUserService loginUserService;
     private final ProfileUserService profileUserService;
     private final UpdateUserService updateUserService;
     private final DeleteUserService deleteUserService;
 
     public UserController(
             RegisterUserService registerUserService,
-            LoginUserService loginUserService,
             ProfileUserService profileUserService,
             UpdateUserService updateUserService,
             DeleteUserService deleteUserService) {
         this.registerUserService = registerUserService;
-        this.loginUserService = loginUserService;
         this.profileUserService = profileUserService;
         this.updateUserService = updateUserService;
         this.deleteUserService = deleteUserService;
     }
 
-    @PostMapping("/register")
+    @PostMapping("")
     @Operation(
             summary = "Create new user.",
             description = "Endpoint that creates a new user in system.",
@@ -59,22 +55,7 @@ public class UserController {
         return ResponseEntity.ok().body(response);
     }
 
-    @PostMapping("/login")
-    @Operation(
-            summary = "Login user with credentials.",
-            description = "Endpoint that login user with credentials.",
-            tags = {"User"}
-    )
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "User created.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserRegisteredResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
-    })
-    public ResponseEntity<Object> login(@Valid @RequestBody UserLoginRequest userRequest) {
-        var response = loginUserService.execute(userRequest);
-        return ResponseEntity.ok().body(response);
-    }
-
-    @GetMapping("/profile/{id}")
+    @GetMapping("/{id}")
     @Operation(
             summary = "Get user profile by id.",
             description = "Endpoint that get user profile by id.",
@@ -89,7 +70,7 @@ public class UserController {
         return ResponseEntity.ok().body(response);
     }
 
-    @PutMapping("/profile/update/{id}")
+    @PutMapping("/{id}")
     @Operation(
             summary = "Update existent user by id.",
             description = "Endpoint that update a existent user by id.",
@@ -105,7 +86,7 @@ public class UserController {
         return ResponseEntity.ok().body(response);
     }
 
-    @DeleteMapping("/profile/{id}")
+    @DeleteMapping("/{id}")
     @Operation(
             summary = "Delete existent user by id.",
             description = "Endpoint that delete a existent user by id.",

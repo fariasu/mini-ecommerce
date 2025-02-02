@@ -19,7 +19,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/v1/cart")
-@Tag(name = "Cart", description = "Operations related to the products Cart.")
+@Tag(name = "Cart", description = "Check for registered carts, create one for your user, or checkout.")
 public class CartController {
 
     private final CartService cartService;
