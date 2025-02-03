@@ -26,7 +26,7 @@ public class CreateProductService {
 
         Product product = productMapper.toProduct(productRequest);
 
-        Product savedProduct = productRepository.save(product);
+        Product savedProduct = productRepository.saveAndFlush(product);
         log.info("Product saved to database: {}", savedProduct);
 
         return productMapper.toProductResponse(savedProduct);
