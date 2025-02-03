@@ -2,7 +2,7 @@ package com.farias.mini_ecommerce.modules.product.controller;
 
 import com.farias.mini_ecommerce.exception.dto.ErrorResponse;
 import com.farias.mini_ecommerce.modules.product.dto.request.ProductRequest;
-import com.farias.mini_ecommerce.modules.product.dto.response.ProductResponse;
+import com.farias.mini_ecommerce.modules.product.dto.response.ProductShortResponse;
 import com.farias.mini_ecommerce.modules.product.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -48,7 +48,7 @@ public class ProductController {
             tags = {"Product"}
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Product created.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponse.class))),
+            @ApiResponse(responseCode = "201", description = "Product created.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductShortResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })
     public ResponseEntity<Object> create(@Valid @RequestBody ProductRequest request) {
@@ -63,7 +63,7 @@ public class ProductController {
             tags = {"Product"}
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Return requested product.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponse.class))),
+            @ApiResponse(responseCode = "200", description = "Return requested product.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductShortResponse.class))),
             @ApiResponse(responseCode = "404", description = "Product not found.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })
@@ -79,14 +79,14 @@ public class ProductController {
             tags = {"Product"}
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Returns all products.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponse.class))),
+            @ApiResponse(responseCode = "200", description = "Returns all products.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductShortResponse.class))),
             @ApiResponse(responseCode = "204", description = "Nothing found.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
     })
     public ResponseEntity<Object> getAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
         Pageable pageable = PageRequest.of(page, size);
         var result = getAllProductsService.execute(pageable);
 
-        if(result.isEmpty()){
+        if(result.totalProducts() <= 0){
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
 
@@ -100,7 +100,7 @@ public class ProductController {
             tags = {"Product"}
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Update specified product.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponse.class))),
+            @ApiResponse(responseCode = "200", description = "Update specified product.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductShortResponse.class))),
             @ApiResponse(responseCode = "404", description = "Product not found.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
     })
@@ -116,7 +116,7 @@ public class ProductController {
             tags = {"Product"}
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Delete specified product.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponse.class))),
+            @ApiResponse(responseCode = "200", description = "Delete specified product.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductShortResponse.class))),
             @ApiResponse(responseCode = "404", description = "Product not found.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
     })

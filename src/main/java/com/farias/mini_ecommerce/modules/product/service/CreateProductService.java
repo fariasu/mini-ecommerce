@@ -1,7 +1,7 @@
 package com.farias.mini_ecommerce.modules.product.service;
 
 import com.farias.mini_ecommerce.modules.product.dto.request.ProductRequest;
-import com.farias.mini_ecommerce.modules.product.dto.response.ProductResponse;
+import com.farias.mini_ecommerce.modules.product.dto.response.ProductShortResponse;
 import com.farias.mini_ecommerce.modules.product.entity.Product;
 import com.farias.mini_ecommerce.modules.product.mapper.ProductMapper;
 import com.farias.mini_ecommerce.modules.product.repository.ProductRepository;
@@ -21,7 +21,7 @@ public class CreateProductService {
     }
 
     @Transactional
-    public ProductResponse execute(ProductRequest productRequest) {
+    public ProductShortResponse execute(ProductRequest productRequest) {
         log.info("Starting to create product: {}", productRequest);
 
         Product product = productMapper.toProduct(productRequest);

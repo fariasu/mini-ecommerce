@@ -22,16 +22,19 @@ public class GetAllProductsService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProductResponse> execute(Pageable pageable) {
+    public ProductResponse execute(Pageable pageable) {
         log.info("Fetching all products sorted by name in descending order.");
 
         var products = productRepository.findAllByOrderByNameAsc(pageable);
 
         if(products.isEmpty()) {
             log.info("No products found.");
-            return List.of();
+            return new ProductResponse(0, List.of());
         }
 
-        return productMapper.toProductResponseList(products);
+        long productQuantity = productRepository.getProductsCount();
+
+        log.info("Total products found: {}", productQuantity);
+        return new ProductResponse(productQuantity, productMapper.toProductResponseList(products));
     }
 }

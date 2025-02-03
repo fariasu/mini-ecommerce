@@ -1,7 +1,7 @@
 package com.farias.mini_ecommerce.modules.product.mapper;
 
 import com.farias.mini_ecommerce.modules.product.dto.request.ProductRequest;
-import com.farias.mini_ecommerce.modules.product.dto.response.ProductResponse;
+import com.farias.mini_ecommerce.modules.product.dto.response.ProductShortResponse;
 import com.farias.mini_ecommerce.modules.product.entity.Product;
 import org.mapstruct.*;
 
@@ -15,9 +15,9 @@ public interface ProductMapper {
     @Mapping(target = "updatedAt", ignore = true)
     Product toProduct(ProductRequest productRequest);
 
-    ProductResponse toProductResponse(Product product);
+    ProductShortResponse toProductResponse(Product product);
 
-    List<ProductResponse> toProductResponseList(List<Product> products);
+    List<ProductShortResponse> toProductResponseList(List<Product> products);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
