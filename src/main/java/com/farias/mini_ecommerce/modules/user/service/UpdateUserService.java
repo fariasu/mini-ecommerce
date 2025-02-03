@@ -6,6 +6,7 @@ import com.farias.mini_ecommerce.modules.user.dto.request.UserRegisterRequest;
 import com.farias.mini_ecommerce.modules.user.dto.response.UserRegisteredResponse;
 import com.farias.mini_ecommerce.modules.user.mapper.UserMapper;
 import com.farias.mini_ecommerce.modules.user.repository.UserRepository;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,19 +16,12 @@ import java.util.UUID;
 
 @Service
 @Slf4j
+@AllArgsConstructor
 public class UpdateUserService {
+
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
-
-    public UpdateUserService(
-            UserRepository userRepository,
-            UserMapper userMapper,
-            PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.userMapper = userMapper;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     public UserRegisteredResponse execute(UUID id, UserRegisterRequest userRegisterRequest) {
         log.info("Attempting to update user with id {}", id);

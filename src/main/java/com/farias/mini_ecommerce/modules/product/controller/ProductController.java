@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -21,25 +22,15 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/v1/product")
+@AllArgsConstructor
 @Tag(name = "Product", description = "Browse registered products or, as an administrator, manage the store's products.")
 public class ProductController {
+
     private final CreateProductService createProductService;
     private final GetProductByIdService getProductByIdService;
     private final GetAllProductsService getAllProductsService;
     private final UpdateProductService updateProductService;
     private final DeleteProductService deleteProductService;
-
-    public ProductController(CreateProductService createProductService,
-                             GetProductByIdService getProductByIdService,
-                             GetAllProductsService getAllProductsService,
-                             UpdateProductService updateProductService,
-                             DeleteProductService deleteProductService) {
-        this.createProductService = createProductService;
-        this.getProductByIdService = getProductByIdService;
-        this.getAllProductsService = getAllProductsService;
-        this.updateProductService = updateProductService;
-        this.deleteProductService = deleteProductService;
-    }
 
     @PostMapping("/")
     @Operation(

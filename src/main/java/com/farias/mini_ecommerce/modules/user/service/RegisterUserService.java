@@ -6,28 +6,22 @@ import com.farias.mini_ecommerce.modules.user.dto.response.UserRegisteredRespons
 import com.farias.mini_ecommerce.modules.user.mapper.UserMapper;
 import com.farias.mini_ecommerce.modules.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
+@AllArgsConstructor
 public class RegisterUserService {
+
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
-    public RegisterUserService(
-            UserRepository userRepository,
-            UserMapper userMapper,
-            PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.userMapper = userMapper;
-        this.passwordEncoder = passwordEncoder;
-    }
-
     @Transactional
-    public UserRegisteredResponse execute(UserRegisterRequest userRequest){
+    public UserRegisteredResponse execute(UserRegisterRequest userRequest) {
         userRepository.findByEmail(userRequest.email())
                 .ifPresent(user -> {
                     throw new EmailAlreadyExistsException();

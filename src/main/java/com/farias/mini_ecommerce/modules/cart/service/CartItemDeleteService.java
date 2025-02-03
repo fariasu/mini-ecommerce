@@ -7,6 +7,7 @@ import com.farias.mini_ecommerce.modules.cart.repository.CartItemRepository;
 import com.farias.mini_ecommerce.modules.cart.repository.CartRepository;
 import com.farias.mini_ecommerce.modules.cart.shared.validator.UserValidator;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -14,21 +15,12 @@ import java.util.UUID;
 
 @Service
 @Slf4j
+@AllArgsConstructor
 public class CartItemDeleteService {
 
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
     private final UserValidator userValidator;
-
-    public CartItemDeleteService(
-            CartRepository cartRepository,
-            CartItemRepository cartItemRepository,
-            UserValidator userValidator
-    ) {
-        this.cartRepository = cartRepository;
-        this.cartItemRepository = cartItemRepository;
-        this.userValidator = userValidator;
-    }
 
     @Transactional
     public void execute(String userId, UUID productId) {

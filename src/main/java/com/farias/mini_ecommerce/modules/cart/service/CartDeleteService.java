@@ -5,22 +5,16 @@ import com.farias.mini_ecommerce.modules.cart.entity.enums.CartStatus;
 import com.farias.mini_ecommerce.modules.cart.repository.CartRepository;
 import com.farias.mini_ecommerce.modules.cart.shared.validator.UserValidator;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
+@AllArgsConstructor
 public class CartDeleteService {
     private final CartRepository cartRepository;
     private final UserValidator userValidator;
-
-    public CartDeleteService(
-            CartRepository cartRepository,
-            UserValidator userValidator
-    ) {
-        this.cartRepository = cartRepository;
-        this.userValidator = userValidator;
-    }
 
     @Transactional
     public void execute(String userId){

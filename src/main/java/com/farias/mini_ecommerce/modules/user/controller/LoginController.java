@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,14 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/v1/user")
+@AllArgsConstructor
 @Tag(name = "Login", description = "Authenticate your user to set up a cart and, if you are an administrator, manage the products.")
 public class LoginController {
 
     private final LoginUserService loginUserService;
-
-    public LoginController(LoginUserService loginUserService) {
-        this.loginUserService = loginUserService;
-    }
 
     @PostMapping("/login")
     @Operation(

@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/v1/user")
+@AllArgsConstructor
 @Tag(name = "User", description = "Manage users, check login details and register administrators.")
 public class UserController {
 
@@ -27,17 +29,6 @@ public class UserController {
     private final ProfileUserService profileUserService;
     private final UpdateUserService updateUserService;
     private final DeleteUserService deleteUserService;
-
-    public UserController(
-            RegisterUserService registerUserService,
-            ProfileUserService profileUserService,
-            UpdateUserService updateUserService,
-            DeleteUserService deleteUserService) {
-        this.registerUserService = registerUserService;
-        this.profileUserService = profileUserService;
-        this.updateUserService = updateUserService;
-        this.deleteUserService = deleteUserService;
-    }
 
     @PostMapping("")
     @Operation(

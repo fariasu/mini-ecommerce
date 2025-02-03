@@ -11,6 +11,7 @@ import com.farias.mini_ecommerce.modules.cart.shared.validator.UserValidator;
 import com.farias.mini_ecommerce.modules.product.entity.Product;
 import com.farias.mini_ecommerce.modules.product.repository.ProductRepository;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -21,21 +22,12 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@AllArgsConstructor
 public class CartFinalizeService {
 
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
     private final UserValidator userValidator;
-
-    public CartFinalizeService(
-            CartRepository cartRepository,
-            ProductRepository productRepository,
-            UserValidator userValidator
-    ) {
-        this.cartRepository = cartRepository;
-        this.productRepository = productRepository;
-        this.userValidator = userValidator;
-    }
 
     @Transactional
     public ResponseOrderGenerated execute(String userID) {

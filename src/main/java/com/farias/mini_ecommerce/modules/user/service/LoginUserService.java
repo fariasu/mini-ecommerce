@@ -5,6 +5,7 @@ import com.farias.mini_ecommerce.modules.user.dto.request.UserLoginRequest;
 import com.farias.mini_ecommerce.modules.user.dto.response.UserLoggedResponse;
 import com.farias.mini_ecommerce.modules.user.repository.UserRepository;
 import com.farias.mini_ecommerce.security.jwt.service.JwtTokenProvider;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,22 +16,15 @@ import java.util.Map;
 
 @Service
 @Slf4j
+@AllArgsConstructor
 public class LoginUserService {
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public LoginUserService(
-            UserRepository userRepository,
-            PasswordEncoder passwordEncoder,
-            JwtTokenProvider jwtTokenProvider) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
-
     @Transactional(readOnly = true)
-    public UserLoggedResponse execute(UserLoginRequest userLoginRequest){
+    public UserLoggedResponse execute(UserLoginRequest userLoginRequest) {
         var user = userRepository.findByEmail(userLoginRequest.email())
                 .orElseThrow(InvalidUsernameOrPasswordException::new);
 
