@@ -1,6 +1,7 @@
 package com.farias.mini_ecommerce.modules.cart.controller;
 
 import com.farias.mini_ecommerce.exception.dto.ErrorResponse;
+import com.farias.mini_ecommerce.modules.cart.dto.request.CartItemUpdateRequest;
 import com.farias.mini_ecommerce.modules.cart.dto.request.CartRequest;
 import com.farias.mini_ecommerce.modules.cart.dto.response.CartResponse;
 import com.farias.mini_ecommerce.modules.cart.service.*;
@@ -11,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +21,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/v1/cart")
+@AllArgsConstructor
 @Tag(name = "Cart", description = "Check for registered carts, create one for your user, or checkout.")
 public class CartController {
 
@@ -27,20 +30,7 @@ public class CartController {
     private final CartDeleteService cartDeleteService;
     private final CartItemDeleteService cartItemDeleteService;
     private final CartFinalizeService cartFinalizeService;
-
-    public CartController(
-            CartService cartService,
-            CartGetService cartGetService,
-            CartDeleteService cartDeleteService,
-            CartItemDeleteService cartItemDeleteService,
-            CartFinalizeService cartFinalizeService
-    ) {
-        this.cartService = cartService;
-        this.cartGetService = cartGetService;
-        this.cartDeleteService = cartDeleteService;
-        this.cartItemDeleteService = cartItemDeleteService;
-        this.cartFinalizeService = cartFinalizeService;
-    }
+    private final CartItemUpdateService cartItemUpdateService;
 
     @PostMapping("/{productId}")
     @Operation(
@@ -104,6 +94,22 @@ public class CartController {
     public ResponseEntity<Object> deleteCartItem(@AuthenticationPrincipal String userId, @PathVariable UUID productId) {
         cartItemDeleteService.execute(userId, productId);
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/item/{productId}")
+    @Operation(
+            summary = "Updates cart item quantity of current logged user cart.",
+            description = "Endpoint that updates the cart item quantity of current logged user cart.",
+            tags = {"Cart"}
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Cart Item deleted successfully."),
+            @ApiResponse(responseCode = "400", description = "Invalid request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Cart or Cart Item not found.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    public ResponseEntity<Object> updateCartItem(@AuthenticationPrincipal String userId, @PathVariable UUID productId, @Valid @RequestBody CartItemUpdateRequest cartItemUpdateRequest) {
+        var result = cartItemUpdateService.execute(userId, productId, cartItemUpdateRequest);
+        return ResponseEntity.ok().body(result);
     }
 
     @PostMapping("/finalize")

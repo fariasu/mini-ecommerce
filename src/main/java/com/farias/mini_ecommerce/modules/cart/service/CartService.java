@@ -11,33 +11,21 @@ import com.farias.mini_ecommerce.modules.cart.shared.validator.UserValidator;
 import com.farias.mini_ecommerce.modules.product.entity.Product;
 import com.farias.mini_ecommerce.modules.product.repository.ProductRepository;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
 @Slf4j
+@AllArgsConstructor
 public class CartService {
 
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
     private final UserValidator userValidator;
     private final com.farias.mini_ecommerce.modules.cart.mapper.CartMapper cartMapper;
-
-    public CartService(
-            CartRepository cartRepository,
-            ProductRepository productRepository,
-            com.farias.mini_ecommerce.modules.cart.mapper.CartMapper cartMapper,
-            UserValidator userValidator
-    ) {
-        this.cartRepository = cartRepository;
-        this.productRepository = productRepository;
-        this.cartMapper = cartMapper;
-        this.userValidator = userValidator;
-    }
 
     @Transactional
     public CartResponse execute(UUID productId, CartRequest cartRequest, String userId) {
@@ -47,7 +35,7 @@ public class CartService {
         var cart = findOrCreateCart(userIdUUID);
 
         addItemToCart(cart, product, cartRequest.quantity());
-        updateTotalPrice(cart);
+        cart.updateTotalPrice();
 
         cartRepository.save(cart);
         log.info("Item added to cart {} for user {}", cart.getId(), userIdUUID);
@@ -90,7 +78,7 @@ public class CartService {
             throw new InsufficientStockException();
         }
 
-        Optional<CartItem> existingItemOpt = findExistingItem(product.getId(), cart);
+        var existingItemOpt = cart.findExistingItem(product.getId());
 
         if (existingItemOpt.isPresent()) {
             var existingItem = existingItemOpt.get();
@@ -104,17 +92,5 @@ public class CartService {
             newItem.setCart(cart);
             cart.getItems().add(newItem);
         }
-    }
-
-    private Optional<CartItem> findExistingItem(UUID productId, Cart cart) {
-        return cart.getItems().stream()
-                .filter(item -> item.getProduct().getId().equals(productId))
-                .findFirst();
-    }
-
-    public void updateTotalPrice(Cart cart) {
-        cart.setTotalPrice(cart.getItems().stream()
-                .map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add));
     }
 }
