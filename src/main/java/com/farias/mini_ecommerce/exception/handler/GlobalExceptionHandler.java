@@ -6,6 +6,9 @@ import com.farias.mini_ecommerce.exception.exceptions.cart.CartNotFoundException
 import com.farias.mini_ecommerce.exception.exceptions.product.InsufficientStockException;
 import com.farias.mini_ecommerce.exception.exceptions.cart.InvalidCartException;
 import com.farias.mini_ecommerce.exception.exceptions.product.ProductNotFoundException;
+import com.farias.mini_ecommerce.exception.exceptions.user.EmailAlreadyExistsException;
+import com.farias.mini_ecommerce.exception.exceptions.user.InvalidUsernameOrPasswordException;
+import com.farias.mini_ecommerce.exception.exceptions.user.UserNotFoundException;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -38,12 +41,6 @@ public class GlobalExceptionHandler{
         return ResponseEntity.badRequest().body(new ErrorResponse("Validation error.", errors));
     }
 
-    @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<ErrorResponse> handleBusinessException(BusinessException ex) {
-        handleLog(ex);
-        return handleException(ex);
-    }
-
     @ExceptionHandler(InvalidCartException.class)
     public ResponseEntity<ErrorResponse> handleInvalidCartException(InvalidCartException ex) {
         handleLog(ex);
@@ -68,20 +65,39 @@ public class GlobalExceptionHandler{
         return handleException(ex);
     }
 
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException ex) {
+        handleLog(ex);
+        return handleException(ex);
+    }
+
+    @ExceptionHandler(InvalidUsernameOrPasswordException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidUsernameOrPasswordException(InvalidUsernameOrPasswordException ex) {
+        handleLog(ex);
+        return handleException(ex);
+    }
+
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleEmailAlreadyExistsException(EmailAlreadyExistsException ex) {
+        handleLog(ex);
+        return handleException(ex);
+    }
+
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<ErrorResponse> handleAllExceptions(Exception ex) {
         log.error("Critical error: {}", ex.getMessage());
-        return handleException(ex);
+        return ResponseEntity.internalServerError().build();
+
     }
 
     private static void handleLog(RuntimeException ex ) {
         log.error("{}: {}", ex.getClass().getCanonicalName().replace("com.farias.mini_ecommerce.exception.exceptions.", ""), ex.getMessage());
     }
 
-    private static ResponseEntity<ErrorResponse> handleException(Exception ex) {
-        var errors = new ArrayList<String>();
-        errors.add(ex.getMessage());
-        return ResponseEntity.internalServerError().body(new ErrorResponse(ex.getClass().getCanonicalName().replace("com.farias.mini_ecommerce.exception.exceptions.", ""), errors));
-    }
+        private static ResponseEntity<ErrorResponse> handleException(BusinessException ex) {
+            var errors = new ArrayList<String>();
+            errors.add(ex.getMessage());
+            return ResponseEntity.status(ex.getStatus()).body(new ErrorResponse(ex.getClass().getCanonicalName().replace("com.farias.mini_ecommerce.exception.exceptions.", ""), errors));
+        }
 }

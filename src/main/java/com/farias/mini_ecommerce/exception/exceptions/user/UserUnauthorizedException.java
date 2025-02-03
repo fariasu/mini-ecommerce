@@ -5,8 +5,8 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public class InvalidUsernameOrPasswordException extends BusinessException {
-    public InvalidUsernameOrPasswordException() {
-        super("Invalid username or password.", HttpStatus.UNAUTHORIZED);
+public class UserUnauthorizedException extends BusinessException {
+    public UserUnauthorizedException() {
+        super("Unauthorized.", HttpStatus.UNAUTHORIZED);
     }
 }

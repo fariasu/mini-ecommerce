@@ -1,11 +1,10 @@
 package com.farias.mini_ecommerce.modules.user.service;
 
-import com.farias.mini_ecommerce.exception.exceptions.BusinessException;
+import com.farias.mini_ecommerce.exception.exceptions.user.UserUnauthorizedException;
 import com.farias.mini_ecommerce.modules.cart.shared.validator.UserValidator;
 import com.farias.mini_ecommerce.modules.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -30,7 +29,7 @@ public class DeleteUserService {
         var userUUID = userValidator.validateUserId(uuid);
 
         if(!userUUID.equals(id))
-            throw new BusinessException("Cannot delete other user.", HttpStatus.UNAUTHORIZED);
+            throw new UserUnauthorizedException();
 
         userRepository.deleteById(id);
     }
