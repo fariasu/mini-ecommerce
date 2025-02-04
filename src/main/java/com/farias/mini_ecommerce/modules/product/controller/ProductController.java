@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -42,6 +43,7 @@ public class ProductController {
             @ApiResponse(responseCode = "201", description = "Product created.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductShortResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Object> create(@Valid @RequestBody ProductRequest request) {
         var result = createProductService.execute(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
@@ -95,6 +97,7 @@ public class ProductController {
             @ApiResponse(responseCode = "404", description = "Product not found.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
     })
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Object> update(@Valid @RequestBody ProductRequest request, @PathVariable UUID id) {
         var result = updateProductService.execute(request, id);
         return ResponseEntity.status(HttpStatus.OK).body(result);
@@ -111,6 +114,7 @@ public class ProductController {
             @ApiResponse(responseCode = "404", description = "Product not found.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
     })
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         deleteProductService.execute(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
