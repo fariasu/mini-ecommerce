@@ -3,6 +3,7 @@ package com.farias.mini_ecommerce.modules.user.service;
 import com.farias.mini_ecommerce.exception.exceptions.user.EmailAlreadyExistsException;
 import com.farias.mini_ecommerce.modules.user.dto.request.UserRegisterRequest;
 import com.farias.mini_ecommerce.modules.user.dto.response.UserRegisteredResponse;
+import com.farias.mini_ecommerce.modules.user.entity.enums.UserRole;
 import com.farias.mini_ecommerce.modules.user.mapper.UserMapper;
 import com.farias.mini_ecommerce.modules.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -22,12 +23,19 @@ public class RegisterUserService {
 
     @Transactional
     public UserRegisteredResponse execute(UserRegisterRequest userRequest) {
+        log.info("Executing user register request: {}", userRequest);
+
         userRepository.findByEmail(userRequest.email())
-                .ifPresent(user -> {
-                    throw new EmailAlreadyExistsException();
-                });
+                .ifPresent(x -> { throw new EmailAlreadyExistsException(); });
 
         var user = userMapper.toUser(userRequest);
+        //Debug purposes
+        if(userRequest.isAdmin()){
+            user.setUserRole(UserRole.ROLE_ADMIN);
+        }else{
+            user.setUserRole(UserRole.ROLE_USER);
+        }
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
 

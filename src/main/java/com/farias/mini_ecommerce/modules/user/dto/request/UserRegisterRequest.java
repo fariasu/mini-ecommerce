@@ -26,5 +26,10 @@ public record UserRegisterRequest(
                 regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]+$",
                 message = "The password must contain at least one uppercase letter, one lowercase letter, one number, and one special character."
         )
-        String password) {
+        String password,
+
+        @NotBlank
+        @Schema(description = "DEBUG PURPOSE: Change user level.", example = "false")
+        Boolean isAdmin
+        ) {
 }
