@@ -39,9 +39,10 @@ public class LoginUserService {
         Map<String, Object> claims = new HashMap<>();
         claims.put("roles", rolesArray);
         var token = jwtTokenProvider.generateToken(user.getId(), claims);
+        var expiresIn = token.expirationTime().toEpochMilli();
 
         log.info("Token created {}", user.getId());
 
-        return new UserLoggedResponse(token);
+        return new UserLoggedResponse("Bearer", token.token(), expiresIn);
     }
 }

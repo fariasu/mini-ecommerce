@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +24,7 @@ import java.util.UUID;
 @RequestMapping("/v1/cart")
 @AllArgsConstructor
 @Tag(name = "Cart", description = "Check for registered carts, create one for your user, or checkout.")
+@PreAuthorize("hasRole('ROLE_USER')")
 public class CartController {
 
     private final CartService cartService;

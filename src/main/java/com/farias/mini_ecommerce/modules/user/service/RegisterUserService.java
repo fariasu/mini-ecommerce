@@ -30,14 +30,14 @@ public class RegisterUserService {
 
         var user = userMapper.toUser(userRequest);
         //Debug purposes
-        if(userRequest.isAdmin()){
+        if(Boolean.TRUE.equals(userRequest.isAdmin())){
             user.setUserRole(UserRole.ROLE_ADMIN);
         }else{
             user.setUserRole(UserRole.ROLE_USER);
         }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
 
         log.info("User {} created", userRequest.email());
 

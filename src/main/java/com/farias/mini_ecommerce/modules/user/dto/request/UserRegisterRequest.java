@@ -28,7 +28,6 @@ public record UserRegisterRequest(
         )
         String password,
 
-        @NotBlank
         @Schema(description = "DEBUG PURPOSE: Change user level.", example = "false")
         Boolean isAdmin
         ) {
