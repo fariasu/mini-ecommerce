@@ -23,8 +23,8 @@ public class JwtTokenProvider {
     @Value("${security.token.secret}")
     private String secretKey;
 
-    public String generateToken(UUID userId, Map<String, Object> claims) {
-        var expiresIn = Instant.now().plus(Duration.ofMinutes(10));
+    public TokenResponse generateToken(UUID userId, Map<String, Object> claims) {
+        var expiresIn = Instant.now().plus(Duration.ofMinutes(60));
         Algorithm algorithm = Algorithm.HMAC256(secretKey);
 
         String issuer = "ECOMMERCE";
@@ -41,7 +41,7 @@ public class JwtTokenProvider {
             }
         });
 
-        return jwtBuilder.sign(algorithm);
+        return new TokenResponse(jwtBuilder.sign(algorithm), expiresIn);
     }
 
     public String validateToken(String token) {
